@@ -73,4 +73,3 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         status_code=400,
         content={"detail": exc.errors(), "body": raw_body.decode("utf-8")},
     )
-    )
