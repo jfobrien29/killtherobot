@@ -73,8 +73,8 @@ export const create = mutation({
 });
 
 export const finishInitialSetup = internalMutation({
-  args: { gameId: v.id('games') },
-  handler: async (ctx, { gameId }) => {
+  args: { gameId: v.id('games'), name: v.string() },
+  handler: async (ctx, { gameId, name }) => {
     await ctx.db.patch(gameId, {
       name,
     });
@@ -314,7 +314,7 @@ export const restartGame = mutation({
       stage: GAME_STAGE.GAME_STARTING,
     });
 
-    await ctx.scheduler.runAfter(0, internal.ai.generatePromptsForGame, {
+    await ctx.scheduler.runAfter(0, internal.ai.generateQuestionsForGame, {
       gameId: game._id,
       theme: game.theme,
       restart: true,
@@ -323,7 +323,7 @@ export const restartGame = mutation({
 });
 
 export const finishRestartGame = internalMutation({
-  args: { gameId: v.id('games'), prompts: v.array(v.string()) },
+  args: { gameId: v.id('games') },
   handler: async (ctx, { gameId }) => {
     const game = await ctx.db.get(gameId);
 
