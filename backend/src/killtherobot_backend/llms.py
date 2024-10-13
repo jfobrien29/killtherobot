@@ -127,6 +127,22 @@ def get_answers(game: Game) -> str:
     good_qa_pairs_str = "\n\n".join(good_qa_pairs)
 
     return good_qa_pairs_str
-    good_qa_pairs_str = "\n\n".join(good_qa_pairs)
 
-    return good_qa_pairs_str
+
+# if __name__ == "__main__":
+#     bot = "John"
+#     system_message = prompt_templates[bot]
+#     human_message = PromptTemplate.from_template("Say {foo}")
+#     human_message.format(good_qa_pairs=good_qa_pairs)
+
+#     prompt = ChatPromptTemplate(
+#         [
+#             ("system", system_message),
+#             ("human", human_message),
+#         ]
+#     )
+
+#     chain = prompt | llm | StrOutputParser
+
+#     answer_text = chain.invoke({"question": question})
+#     answers.append(Answer(name=bot, text=answer_text, votes=None))
