@@ -9,29 +9,29 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { GAME_STAGE } from '@/convex/game';
 import { Bot, PersonStanding } from 'lucide-react';
-import { HumanOrBot, Matchup, PlayerType } from '@/convex/schema';
+import { HumanOrBot, PlayerType } from '@/convex/schema';
 
-const getPlayerssWhoGaveTwoAnswers = (game: any): string[] => {
-  if (!game) return [];
-  // First create a map of player name to number of answers
-  const playerAnswerCount = game.matchups.reduce(
-    (acc: Record<string, number>, matchup: Matchup) => {
-      if (!!matchup.player1Answer) {
-        acc[matchup.player1] = (acc[matchup.player1] || 0) + 1;
-      }
-      if (!!matchup.player2Answer) {
-        acc[matchup.player2] = (acc[matchup.player2] || 0) + 1;
-      }
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+// const getPlayerssWhoGaveTwoAnswers = (game: any): string[] => {
+//   if (!game) return [];
+//   // First create a map of player name to number of answers
+//   const playerAnswerCount = game.matchups.reduce(
+//     (acc: Record<string, number>, matchup: Matchup) => {
+//       if (!!matchup.player1Answer) {
+//         acc[matchup.player1] = (acc[matchup.player1] || 0) + 1;
+//       }
+//       if (!!matchup.player2Answer) {
+//         acc[matchup.player2] = (acc[matchup.player2] || 0) + 1;
+//       }
+//       return acc;
+//     },
+//     {} as Record<string, number>,
+//   );
 
-  console.log(playerAnswerCount);
+//   console.log(playerAnswerCount);
 
-  // Then filter the map to only include players who gave two answers
-  return Object.keys(playerAnswerCount).filter((player) => playerAnswerCount[player] === 2);
-};
+//   // Then filter the map to only include players who gave two answers
+//   return Object.keys(playerAnswerCount).filter((player) => playerAnswerCount[player] === 2);
+// };
 
 export default function Home() {
   const { code } = useParams();
@@ -49,9 +49,9 @@ export default function Home() {
     }
   }, []);
 
-  const playersWhoGaveTwoAnswers = getPlayerssWhoGaveTwoAnswers(game);
+  // const playersWhoGaveTwoAnswers = getPlayerssWhoGaveTwoAnswers(game);
 
-  console.log(playersWhoGaveTwoAnswers);
+  // console.log(playersWhoGaveTwoAnswers);
 
   useEffect(() => {
     const generateQrCode = async () => {
@@ -104,9 +104,7 @@ export default function Home() {
                   {game?.humans.map((human) => (
                     <div key={human.name} className="text-lg mb-2 flex items-center text-gray-700">
                       <PersonStanding className="mr-2" /> {human.name}{' '}
-                      {playersWhoGaveTwoAnswers.includes(human.name) && (
-                        <span className="ml-2 text-green-500">👍</span>
-                      )}
+                      {[].includes(human.name) && <span className="ml-2 text-green-500">👍</span>}
                     </div>
                   ))}
                 </div>
@@ -118,9 +116,7 @@ export default function Home() {
                   {game?.bots.map((bot) => (
                     <div key={bot.name} className="text-lg mb-2 flex items-center text-gray-700">
                       <Bot className="mr-2" /> {bot.name}{' '}
-                      {playersWhoGaveTwoAnswers.includes(bot.name) && (
-                        <span className="ml-2 text-green-500">👍</span>
-                      )}
+                      {[].includes(bot.name) && <span className="ml-2 text-green-500">👍</span>}
                     </div>
                   ))}
                 </div>

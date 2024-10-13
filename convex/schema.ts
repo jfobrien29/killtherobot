@@ -64,5 +64,18 @@ export default defineSchema({
         isAlive: v.boolean(),
       }),
     ),
+    rounds: v.array(
+      v.object({
+        question: v.string(),
+        answers: v.array(
+          v.object({
+            name: v.string(),
+            text: v.string(),
+            votes: v.array(v.string()),
+          }),
+        ),
+      }),
+    ),
+    currentRound: v.number(),
   }).index('by_code', ['code']),
 });

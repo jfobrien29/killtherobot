@@ -23,7 +23,7 @@ export default function Home() {
   const onSubmit = async (data: { name: string }) => {
     console.log(data);
     const code = await createGame({
-      theme: data.name,
+      name: data.name,
     });
 
     router.push(`/g/${code}`);
@@ -43,8 +43,8 @@ export default function Home() {
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="w-full max-w-md">
             <TextareaField
-              label="Give a theme for your game:"
-              placeholder={`e.g. "MIT AI Club"`}
+              label="Give a name for your game:"
+              placeholder={`e.g. "Sundai Club's Last Stand"`}
               name="name"
             />
             <Button type="submit" className="mt-4 w-full">

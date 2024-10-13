@@ -24,6 +24,16 @@ const getARandomBotName = (notThisOne?: string) => {
   return name;
 };
 
+const getThreeRandomBots = () => {
+  // Create a copy of the bot name array
+  const names = [...BOT_NAMES];
+
+  // now shuffle it
+  names.sort(() => Math.random() - 0.5);
+
+  return names.slice(0, 3);
+};
+
 export const get = query({
   args: { code: v.string() },
   handler: async (ctx, { code }) => {
@@ -43,30 +53,34 @@ const generateCode = () => {
 };
 
 export const create = mutation({
-  args: { theme: v.string() },
-  handler: async (ctx, { theme }) => {
+  args: { name: v.string() },
+  handler: async (ctx, { name }) => {
     const code = generateCode();
+
+    const threeBots = getThreeRandomBots();
+
     const gameId = await ctx.db.insert('games', {
-      name: theme,
-      theme: theme,
+      name: name,
+      theme: name,
       code,
       stage: GAME_STAGE.PLAYERS_JOINING,
       humans: [],
-      bots: [],
-      // bots: [
-      //   {
-      //     name: getARandomBotName(),
-      //     score: 0,
-      //     isAlive: true,
-      //   },
-      // ],
+      bots: threeBots.map((name) => ({
+        name,
+        score: 0,
+        isAlive: true,
+      })),
+      rounds: [],
+      currentRound: 0,
     });
 
-    await ctx.scheduler.runAfter(0, internal.ai.generateQuestionsForGame, {
-      gameId: gameId,
-      theme,
-      restart: false,
-    });
+    console.log('gameId', gameId);
+
+    // await ctx.scheduler.runAfter(0, internal.ai.generateQuestionsForGame, {
+    //   gameId: gameId,
+    //   theme,
+    //   restart: false,
+    // });
 
     return code;
   },
