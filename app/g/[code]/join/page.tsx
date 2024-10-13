@@ -43,7 +43,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center min-h-screen pb-20 gap-16 p-4 w-full justify-between">
-      <div className="absolute inset-0 bg-[url('/bg.png')] bg-cover bg-center opacity-5 z-0"></div>
+      <div className="absolute inset-0 bg-[url('/bg.webp')] bg-cover bg-center opacity-5 z-0"></div>
       <div className="w-full relative z-10 flex flex-col items-center min-h-screen gap-16">
         <div className="text-center text-sm text-gray-500 mb-4">
           <h2 className="text-base font-semibold">{game?.name || 'Kill The Robot'}</h2>

@@ -221,7 +221,7 @@ export default function PlayerPage() {
 
   return (
     <div className="flex flex-col items-center min-h-screen pb-20 gap-16 p-4 w-full justify-between relative">
-      <div className="absolute inset-0 bg-[url('/bg.png')] bg-cover bg-center opacity-5 z-0"></div>
+      <div className="absolute inset-0 bg-[url('/bg.webp')] bg-cover bg-center opacity-5 z-0"></div>
       <div className="relative flex flex-col items-center min-h-screen gap-16 w-full justify-between">
         <div className="w-full">
           <div className="text-center text-sm text-gray-500 mb-4">

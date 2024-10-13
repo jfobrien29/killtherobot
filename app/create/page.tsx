@@ -32,7 +32,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center min-h-screen pb-20 gap-8 p-4 relative">
-      <div className="absolute inset-0 bg-[url('/bg.png')] bg-cover bg-center opacity-5 z-0"></div>
+      <div className="absolute inset-0 bg-[url('/bg.webp')] bg-cover bg-center opacity-5 z-0"></div>
       <div className="z-10 flex flex-col items-center gap-8 relative">
         <h1 className="mt-8 text-xl font-bold text-gray-600">Booting up Kill The Robot...</h1>
         <div className="max-w-md text-sm">

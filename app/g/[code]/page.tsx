@@ -64,7 +64,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center min-h-screen pb-20 gap-8 p-4 relative">
-      <div className="absolute inset-0 bg-[url('/bg.png')] bg-cover bg-center opacity-5 z-0"></div>
+      <div className="absolute inset-0 bg-[url('/bg.webp')] bg-cover bg-center opacity-5 z-0"></div>
       <div className="z-10 flex flex-col items-center min-h-screen gap-8 w-full">
         <div>
           <h2 className="text-xl font-extrabold text-center text-gray-500">

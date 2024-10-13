@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div className="flex flex-col  min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] relative">
-      <div className="absolute inset-0 bg-[url('/bg.png')] bg-cover bg-center opacity-40 z-0"></div>
+      <div className="absolute inset-0 bg-[url('/bg.webp')] bg-cover bg-center opacity-40 z-0"></div>
       <div className="relative z-10">
         <h1 className="font-bold text-center mt-12 ">
           <span className="text-3xl italic opacity-0 translate-y-4 animate-[fade-in-up_1s_ease-out_forwards]">
