@@ -43,27 +43,28 @@ const generateCode = () => {
 };
 
 export const create = mutation({
-  args: { name: v.string() },
-  handler: async (ctx, { name }) => {
+  args: { theme: v.string() },
+  handler: async (ctx, { theme }) => {
     const code = generateCode();
     const gameId = await ctx.db.insert('games', {
-      name,
-      theme: name,
+      name: theme,
+      theme: theme,
       code,
       stage: GAME_STAGE.PLAYERS_JOINING,
       humans: [],
-      bots: [
-        {
-          name: getARandomBotName(),
-          score: 0,
-          isAlive: true,
-        },
-      ],
+      bots: [],
+      // bots: [
+      //   {
+      //     name: getARandomBotName(),
+      //     score: 0,
+      //     isAlive: true,
+      //   },
+      // ],
     });
 
-    await ctx.scheduler.runAfter(0, internal.ai.generatePromptsForGame, {
+    await ctx.scheduler.runAfter(0, internal.ai.generateQuestionsForGame, {
       gameId: gameId,
-      theme: name,
+      theme,
       restart: false,
     });
 
@@ -72,8 +73,8 @@ export const create = mutation({
 });
 
 export const finishInitialSetup = internalMutation({
-  args: { gameId: v.id('games'), name: v.string(), prompts: v.array(v.string()) },
-  handler: async (ctx, { gameId, name }) => {
+  args: { gameId: v.id('games') },
+  handler: async (ctx, { gameId }) => {
     await ctx.db.patch(gameId, {
       name,
     });

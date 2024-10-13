@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
@@ -14,6 +15,32 @@ export interface HumanOrBot {
 
 export interface Human extends HumanOrBot {
   isAdmin: boolean;
+}
+
+export interface Game {
+  name: string;
+  theme: string;
+  code: string;
+  stage: string; // PLAYERS_JOINING, ENTER_ANSWERS...
+  humans: {
+    name: string;
+    isAlive: boolean; // Each round, someone is killed
+    isAdmin: boolean; // First person to join who can "start" the game
+  }[];
+  bots: {
+    name: string;
+    config: any;
+    isAlive: boolean; // Each round, someone is killed
+  }[];
+  rounds: {
+    question: string;
+    answers: {
+      name: string; // Who submitted the answer
+      text: string; // The answer
+      votes: string[]; // Array of names of who voted for this answer
+    }[];
+  }[]; // Questions and answers for each round
+  currentRound: number; // start at 0, index for rounds array
 }
 
 export default defineSchema({

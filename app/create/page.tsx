@@ -18,7 +18,6 @@ export default function Home() {
     resolver: yupResolver(schema),
   });
   const router = useRouter();
-
   const createGame = useMutation(api.game.create);
 
   const onSubmit = async (data: { name: string }) => {
@@ -44,8 +43,8 @@ export default function Home() {
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="w-full max-w-md">
             <TextareaField
-              label="To get started, list a topic you want Kill The Robot to focus on:"
-              placeholder="e.g. Ancient Rome, space travel, Tik Tok stars, etc."
+              label="Give a nickname for your game:"
+              placeholder={`e.g. "Sundai Club's Last Stand"`}
               name="name"
             />
             <Button type="submit" className="mt-4 w-full">
