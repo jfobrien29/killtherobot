@@ -61,6 +61,8 @@ def get_answers(game: Game) -> list[Answer]:
         for j, a in enumerate(r.answers):
             if a.votes is not None and any(human in a.votes for human in live_humans):
                 good_qa_pairs.append(f"- Answer {j}: {a.text}")
+            else:
+                good_qa_pairs.pop()
 
     good_qa_pairs_str = "\n\n".join(good_qa_pairs)
 
