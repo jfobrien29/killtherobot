@@ -10,6 +10,7 @@ export enum GAME_STAGE {
   GAME_STARTING = 'GAME_STARTING', // game is starting, create matchups and set prompts
   ENTER_RESPONSES = 'ENTER_RESPONSES', // players enter their responses
   VOTING = 'VOTING', // players vote on the best response, responses shown head to head
+  NEXT_ROUND_LOADING = 'NEXT_ROUND_LOADING', // next round is loading
   REVEAL = 'REVEAL', // reveal the winner of the vote
   PAUSED = 'PAUSED', // game is paused
   SHOW_RANKINGS = 'SHOW_RANKINGS', // show the rankings (in between rounds)
@@ -420,16 +421,35 @@ export const nextRound = mutation({
     }
 
     await ctx.db.patch(game._id, {
+      stage: GAME_STAGE.NEXT_ROUND_LOADING,
+    });
+
+    await ctx.scheduler.runAfter(0, internal.ai.generateNextQuestionForGame, {
+      gameId: game._id,
+    });
+  },
+});
+
+export const finishNextRoundLoading = internalMutation({
+  args: { gameId: v.id('games'), question: v.string() },
+  handler: async (ctx, { gameId, question }) => {
+    const game = await ctx.db.get(gameId);
+
+    if (!game) {
+      throw new Error('Game not found');
+    }
+
+    await ctx.db.patch(gameId, {
       rounds: [
         ...game.rounds,
         {
-          question: `This is the question for round ${game.currentRound + 1}`,
+          question: question,
           answers: [],
           eliminatedPlayer: '',
         },
       ],
       currentRound: game.currentRound + 1,
-      stage: GAME_STAGE.GAME_OVER,
+      stage: GAME_STAGE.ENTER_RESPONSES,
     });
   },
 });

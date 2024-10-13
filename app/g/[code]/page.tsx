@@ -163,13 +163,24 @@ export default function Home() {
                     >
                       <div
                         className={clsx(
-                          'flex justify-center items-center w-full font-semibold text-xl text-gray-700 my-4 px-3 py-6 bg-white rounded-lg shadow-inner',
+                          'flex flex-col justify-center items-center w-full font-semibold text-xl text-gray-700 my-4 px-3 py-6 bg-white rounded-lg shadow-inner',
                           game.stage === GAME_STAGE.REVEAL &&
                             item.name === currentRound?.eliminatedPlayer &&
                             'bg-red-500',
                         )}
                       >
-                        {item.text}
+                        <div>{item.text}</div>
+                        {game.stage === GAME_STAGE.REVEAL &&
+                          item.name === currentRound?.eliminatedPlayer && (
+                            <div className="flex items-center mt-2 text-sm font-normal gap-1">
+                              {item.name} -{' '}
+                              {game.humans.some((human) => human.name === item.name) ? (
+                                <PersonStanding className="inline-block mr-1" />
+                              ) : (
+                                <Bot className="inline-block mr-1" />
+                              )}
+                            </div>
+                          )}
                       </div>
                     </div>
                   ))}

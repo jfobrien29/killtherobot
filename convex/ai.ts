@@ -32,17 +32,17 @@ export const botCreateAnswers = internalAction({
       throw new ConvexError('Game not found');
     }
 
+    const botsAlive = game.bots.filter((bot) => bot.isAlive);
+
     // TODO: This is where we would create answers for the bots
     // Send out response and expect an array of answer back
     try {
-      const resp = await fetch('https://killtherobot.onrender.com/answer_question', {
+      const resp = await fetch('https://killtherobot.onrender.com/get_answer', {
         method: 'POST',
-        body: JSON.stringify({
-          game: game,
-        }),
+        body: JSON.stringify(game),
         headers: {
           'Content-Type': 'application/json',
-          'api-ky': 'f44345fa-ab73-4fe6-8c20-e137751a5f76',
+          'api-key': 'f44345fa-ab73-4fe6-8c20-e137751a5f76',
         },
       });
 
@@ -52,7 +52,9 @@ export const botCreateAnswers = internalAction({
 
       await ctx.runMutation(internal.game.updateWithBotsAnswers, {
         gameId,
-        answers: responseAnswers,
+        answers: responseAnswers.filter((answer: any) =>
+          botsAlive.some((bot: any) => bot.name === answer.name),
+        ),
       });
     } catch (e) {
       console.error('Error creating answers', e);
@@ -83,8 +85,61 @@ export const generateQuestionsForGame = internalAction({
     const name = await generateNameForGame(theme || 'Anything that comes to mind');
 
     const question = await getAnthropicResponse(
-      `You are a helpful assistant.`,
-      `Generate a provactive and non-obvious question that can be answered with a few words about: ${theme}`,
+      `You are a helpful assistant. Response with a one line answer.`,
+      `Please create a one line exciting, adventure question in the style of Cards Against Humanity where there is one blank to fill, using the template of hero_journey_stages below, the universe=${theme}, the current current_question=1.
+
+game_state:
+  current_question:
+  total_questions: 12
+  user_score: 0
+  universe: 
+  hero_journey_stage: "ordinary_world"
+  last_voted_answer: ""
+  user_response_style:
+    average_length: 0
+    tone: "neutral"
+    complexity: "medium"
+
+hero_journey_stages:
+  - ordinary_world
+  - call_to_adventure
+  - refusal_of_the_call
+  - meeting_the_mentor
+  - crossing_the_threshold
+  - tests_allies_enemies
+  - approach_to_inmost_cave
+  - ordeal
+  - reward
+  - the_road_back
+  - resurrection
+  - return_with_elixir
+
+questions:
+  # [Previous questions remain the same]
+
+user_responses: []
+
+ai_responses: []
+
+process_input:
+  - get_current_question
+  - present_options
+  - collect_user_votes
+  - determine_winning_answer
+  - analyze_user_responses
+  - update_hero_journey_stage
+  - generate_ai_response
+  - update_game_state
+  - check_game_end
+
+generate_output:
+  - format_ai_response_with_hero_journey
+  - present_next_question
+  - display_game_summary
+
+update_hero_journey_stage:
+  - determine_next_stage
+  - apply_stage_to_response`,
     );
 
     await ctx.runMutation(internal.game.finishInitialSetup, {
@@ -104,6 +159,82 @@ const generateNameForGame = async (theme: string) => {
 
   return resp || 'Kill The Robot';
 };
+
+export const generateNextQuestionForGame = internalAction({
+  args: { gameId: v.id('games') },
+  handler: async (ctx, { gameId }) => {
+    const game = await ctx.runQuery(internal.game.getGameById, {
+      gameId,
+    });
+
+    if (!game) {
+      throw new ConvexError('Game not found');
+    }
+
+    const question = await getAnthropicResponse(
+      `You are a helpful assistant. Response with a one line answer.`,
+      `Please create a one line exciting, adventure question in the style of Cards Against Humanity where there is one blank to fill, using the template of hero_journey_stages below, the universe=${game.theme}, the current current_question=${game.rounds.length + 1}.
+
+game_state:
+  current_question:
+  total_questions: 12
+  user_score: 0
+  universe: 
+  hero_journey_stage: "ordinary_world"
+  last_voted_answer: ""
+  user_response_style:
+    average_length: 0
+    tone: "neutral"
+    complexity: "medium"
+
+hero_journey_stages:
+  - 1 ordinary_world
+  - 2 call_to_adventure
+  - 3 refusal_of_the_call
+  - 4 meeting_the_mentor
+  - 5 crossing_the_threshold
+  - 6 tests_allies_enemies
+  - 7 approach_to_inmost_cave
+  - 8 ordeal
+  - 9 reward
+  - 10 the_road_back
+  - 11 resurrection
+  - 12 return_with_elixir
+
+questions:
+  ${game.rounds.map((round) => `- ${round.question}`).join('\n')}
+
+process_input:
+  - get_current_question
+  - present_options
+  - collect_user_votes
+  - determine_winning_answer
+  - analyze_user_responses
+  - update_hero_journey_stage
+  - generate_ai_response
+  - update_game_state
+  - check_game_end
+
+generate_output:
+  - format_ai_response_with_hero_journey
+  - present_next_question
+  - display_game_summary
+
+update_hero_journey_stage:
+  - determine_next_stage
+  - apply_stage_to_response`,
+    );
+
+    await ctx.runMutation(internal.game.finishNextRoundLoading, {
+      gameId,
+      question,
+    });
+
+    await ctx.scheduler.runAfter(0, internal.ai.botCreateAnswers, {
+      gameId,
+    });
+  },
+});
 
 export const getAnthropicResponse = async (system: string, user: string) => {
   const msg = await anthropic.messages.create({

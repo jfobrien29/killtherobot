@@ -43,8 +43,8 @@ export default function Home() {
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="w-full max-w-md">
             <TextareaField
-              label="Give a name for your game:"
-              placeholder={`e.g. "Sundai Club's Last Stand"`}
+              label="Give the theme of your game:"
+              placeholder={`ex. "Marvel Universe", "Planets in the solar system", "Famous cities"`}
               name="name"
             />
             <Button type="submit" className="mt-4 w-full">

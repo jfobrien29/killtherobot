@@ -66,6 +66,15 @@ const Answering = () => {
     return <div>Whoops...</div>;
   }
 
+  const currentPlayerAnswer = game.humans.find((human) => human.name === playerName);
+  if (!!currentPlayerAnswer && !currentPlayerAnswer.isAlive) {
+    return (
+      <div className="w-full flex justify-center">
+        <div>You were eliminated!</div>
+      </div>
+    );
+  }
+
   if (!!currentRound.answers.find((answer) => answer.name === playerName)) {
     return (
       <div className="w-full flex justify-center">
@@ -130,7 +139,7 @@ const Voting = () => {
   const onSubmit = async () => {
     if (selectedVotes.length !== 2) {
       toast({
-        title: 'Please select 2 answers to vote for',
+        title: 'Please vote for 2 answers to eliminate',
       });
       return;
     }
@@ -139,6 +148,15 @@ const Voting = () => {
 
   if (!game) {
     return <div>Loading...</div>;
+  }
+
+  const currentPlayerAnswer = game.humans.find((human) => human.name === playerName);
+  if (!!currentPlayerAnswer && !currentPlayerAnswer.isAlive) {
+    return (
+      <div className="w-full flex justify-center">
+        <div>You were eliminated!</div>
+      </div>
+    );
   }
 
   const currentRound = game.rounds[game.currentRound];
@@ -174,7 +192,7 @@ const Voting = () => {
             </Button>
           </div>
         ))}
-        <Button onClick={() => onSubmit()}>Submit Votes</Button>
+        <Button onClick={() => onSubmit()}>Vote to Eliminate 2 Responses</Button>
       </div>
     </div>
   );
