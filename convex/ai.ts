@@ -124,7 +124,7 @@ export const generateQuestionsForGame = internalAction({
 game_state:
   total_questions: 12
   theme: ${theme}
-  hero_journey_stage: 8
+  hero_journey_stage: 0
 hero_journey_stages:
   1. ordinary_world
   2. call_to_adventure
@@ -175,7 +175,7 @@ export const generateNextQuestionForGame = internalAction({
 game_state:
   total_questions: 12
   theme: ${game.theme}
-  hero_journey_stage: 8
+  hero_journey_stage: ${game.rounds.length + 1}
   last_question: ${game.rounds[game.rounds.length - 1].question}
   last_voted_answer: ${game.rounds[game.rounds.length - 1].answers[0].text}
 hero_journey_stages:
