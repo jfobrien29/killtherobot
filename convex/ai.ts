@@ -37,30 +37,31 @@ export const botCreateAnswers = internalAction({
     // TODO: This is where we would create answers for the bots
     // Send out response and expect an array of answer back
     try {
-      const resp = await fetch('https://killtherobot.onrender.com/get_answer', {
-        method: 'POST',
-        body: JSON.stringify(game),
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': 'f44345fa-ab73-4fe6-8c20-e137751a5f76',
-        },
-      });
+      // const resp = await fetch('https://killtherobot.onrender.com/get_answer', {
+      //   method: 'POST',
+      //   body: JSON.stringify(game),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'api-key': 'f44345fa-ab73-4fe6-8c20-e137751a5f76',
+      //   },
+      // });
 
-      console.log('resp', resp);
-      const responseAnswers = await resp.json();
-      console.log('responseAnswers', responseAnswers);
+      // console.log('resp', resp);
+      // const responseAnswers = await resp.json();
+      // console.log('responseAnswers', responseAnswers);
 
-      await ctx.runMutation(internal.game.updateWithBotsAnswers, {
-        gameId,
-        answers: responseAnswers
-          .filter((answer: any) => botsAlive.some((bot: any) => bot.name === answer.name))
-          .map((answer: any) => {
-            return {
-              name: answer.name,
-              text: answer.text,
-            };
-          }),
-      });
+      // await ctx.runMutation(internal.game.updateWithBotsAnswers, {
+      //   gameId,
+      //   answers: responseAnswers
+      //     .filter((answer: any) => botsAlive.some((bot: any) => bot.name === answer.name))
+      //     .map((answer: any) => {
+      //       return {
+      //         name: answer.name,
+      //         text: answer.text,
+      //       };
+      //     }),
+      // });
+      throw new Error('Not implemented');
     } catch (e) {
       console.error('Error creating answers', e);
       try {
