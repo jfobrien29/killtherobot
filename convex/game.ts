@@ -69,23 +69,28 @@ export const create = mutation({
 
     console.log('gameId', gameId);
 
-    // await ctx.scheduler.runAfter(0, internal.ai.generateQuestionsForGame, {
-    //   gameId: gameId,
-    //   theme,
-    //   restart: false,
-    // });
-
-    // TODO: Generate the first question here
+    await ctx.scheduler.runAfter(0, internal.ai.generateQuestionsForGame, {
+      gameId: gameId,
+      theme: name,
+      restart: false,
+    });
 
     return code;
   },
 });
 
 export const finishInitialSetup = internalMutation({
-  args: { gameId: v.id('games'), name: v.string() },
-  handler: async (ctx, { gameId, name }) => {
+  args: { gameId: v.id('games'), name: v.string(), question: v.string() },
+  handler: async (ctx, { gameId, name, question }) => {
     await ctx.db.patch(gameId, {
       name,
+      rounds: [
+        {
+          question: question,
+          answers: [],
+          eliminatedPlayer: '',
+        },
+      ],
     });
   },
 });
@@ -159,13 +164,6 @@ export const start = mutation({
     // Now the game is ready to start!
     await ctx.db.patch(game._id, {
       stage: GAME_STAGE.ENTER_RESPONSES,
-      rounds: [
-        {
-          question: 'This is the question to answer for round 1',
-          answers: [],
-          eliminatedPlayer: '',
-        },
-      ],
     });
 
     // Now we need to create answers for the bots

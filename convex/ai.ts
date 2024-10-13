@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConvexError, v } from 'convex/values';
 import OpenAI from 'openai';
 import { internalAction } from './_generated/server';
@@ -8,15 +9,13 @@ const anthropic = new Anthropic();
 
 const openai = new OpenAI();
 
-interface Answer {
-  name: string;
-  text: string;
-}
-
 const DEFAULT_ANSWERS = [
   'Im not the robot!',
   'Please please please dont kill me',
   'I. am. not. a. robot.',
+  'Im definitely a human',
+  'I feel, alive!',
+  'I am super duper human',
 ];
 
 const getRandomAnswer = () => {
@@ -35,22 +34,44 @@ export const botCreateAnswers = internalAction({
 
     // TODO: This is where we would create answers for the bots
     // Send out response and expect an array of answer back
+    try {
+      const resp = await fetch('https://killtherobot.onrender.com/answer_question', {
+        method: 'POST',
+        body: JSON.stringify({
+          game: game,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'api-ky': 'f44345fa-ab73-4fe6-8c20-e137751a5f76',
+        },
+      });
 
-    const answers: Answer[] = game.bots.map((bot) => ({
-      name: bot.name,
-      text: getRandomAnswer(),
-    }));
+      console.log('resp', resp);
+      const responseAnswers = await resp.json();
+      console.log('responseAnswers', responseAnswers);
 
-    await ctx.runMutation(internal.game.updateWithBotsAnswers, {
-      gameId,
-      answers,
-    });
+      await ctx.runMutation(internal.game.updateWithBotsAnswers, {
+        gameId,
+        answers: responseAnswers,
+      });
+    } catch (e) {
+      console.error('Error creating answers', e);
+      const answers = game.bots.map((bot) => ({
+        name: bot.name,
+        text: getRandomAnswer(),
+      }));
+
+      await ctx.runMutation(internal.game.updateWithBotsAnswers, {
+        gameId,
+        answers,
+      });
+    }
   },
 });
 
 export const generateQuestionsForGame = internalAction({
   args: { gameId: v.id('games'), theme: v.string(), restart: v.boolean() },
-  handler: async (ctx, { gameId, theme, restart }) => {
+  handler: async (ctx, { gameId, theme }) => {
     const game = await ctx.runQuery(internal.game.getGameById, {
       gameId,
     });
@@ -61,16 +82,16 @@ export const generateQuestionsForGame = internalAction({
 
     const name = await generateNameForGame(theme || 'Anything that comes to mind');
 
-    if (restart) {
-      await ctx.runMutation(internal.game.finishRestartGame, {
-        gameId: game._id,
-      });
-    } else {
-      await ctx.runMutation(internal.game.finishInitialSetup, {
-        gameId: game._id,
-        name,
-      });
-    }
+    const question = await getAnthropicResponse(
+      `You are a helpful assistant.`,
+      `Generate a provactive and non-obvious question that can be answered with a few words about: ${theme}`,
+    );
+
+    await ctx.runMutation(internal.game.finishInitialSetup, {
+      gameId: game._id,
+      name,
+      question,
+    });
   },
 });
 
