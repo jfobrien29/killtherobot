@@ -27,7 +27,7 @@ async def healthz():
 
 
 @app.post("/get_answer")
-async def answer_question(game: Game, api_key: str = Header(...)) -> list[Answer]:
+async def get_answer(game: Game, api_key: str = Header(...)) -> list[Answer]:
     """Generate an answer for the current round's question using OpenAI API.
 
     Args:
