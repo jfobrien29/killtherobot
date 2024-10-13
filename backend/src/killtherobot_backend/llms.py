@@ -1,14 +1,12 @@
 import os
 
 from dotenv import load_dotenv
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.runnables import ConfigurableField
 from langchain_core.runnables.base import RunnableSerializable
 from langchain_openai import ChatOpenAI
 
-from .models import Answer, Game
-from .prompts import bots
+from killtherobot_backend.models import Answer, Game
+from killtherobot_backend.prompts import bots
 
 _ = load_dotenv()
 
@@ -82,7 +80,7 @@ def load_model() -> RunnableSerializable:
     return llm
 
 
-def answer_question(game: Game) -> Answer:
+def answer_question(game: Game) -> list[Answer]:
     live_bots = [bot.name for bot in game.bots if bot.isAlive]
 
     question = game.rounds[-1].question
@@ -93,43 +91,50 @@ def answer_question(game: Game) -> Answer:
 
     answers = []
     for bot in live_bots:
-        system_message = prompt_templates[bot]
-        human_message = PromptTemplate.from_template("Say {foo}")
-        human_message.format(good_qa_pairs=good_qa_pairs)
-
-        prompt = ChatPromptTemplate(
-            [
-                ("system", system_message),
-                ("human", human_message),
-            ]
+        system_message = prompt_templates[bot]["system_message"]
+        human_message = prompt_templates[bot]["prompt"].format(
+            question=question, good_qa_pairs=good_qa_pairs
         )
 
-        chain = prompt | llm | StrOutputParser
+        prompt = system_message + "\n\n" + human_message
 
-        answer_text = chain.invoke({"question": question})
+        answer_text = llm.invoke(prompt).content
         answers.append(Answer(name=bot, text=answer_text, votes=None))
 
     return answers
 
 
 def get_answers(game: Game) -> str:
-    live_humans = [human.name for human in game.humans if human.isAlive]
+    try:
+        live_humans = [human.name for human in game.humans if human.isAlive]
 
-    good_qa_pairs = []
-    for i, r in enumerate(game.rounds):
-        good_qa_pairs.append(f"Question {i}: {r.question}")
-        for j, a in enumerate(r.answers):
-            answers = []
-            if any(human in a.votes for human in live_humans):
-                answers.append(f"- Answer {j}: {a.text}")
-            good_qa_pairs.append("\n".join(answers))
+        good_qa_pairs = []
+        for i, r in enumerate(game.rounds):
+            good_qa_pairs.append(f"Question {i}: {r.question}")
+            for j, a in enumerate(r.answers):
+                answers = []
+                if a.votes is None:
+                    continue
+                elif any(human in a.votes for human in live_humans):
+                    answers.append(f"- Answer {j}: {a.text}")
+                good_qa_pairs.append("\n".join(answers))
 
-    good_qa_pairs_str = "\n\n".join(good_qa_pairs)
+        good_qa_pairs_str = "\n\n".join(good_qa_pairs)
+    except Exception:
+        good_qa_pairs_str = ""
 
     return good_qa_pairs_str
 
 
 # if __name__ == "__main__":
+#     question = "France is in ___"
+#     prompt_templates = bots
+#     llm = load_model()
+
+#     good_qa_pairs = ""
+
+#     answers = []
+
 #     bot = "John"
 #     system_message = prompt_templates[bot]
 #     human_message = PromptTemplate.from_template("Say {foo}")
@@ -145,4 +150,5 @@ def get_answers(game: Game) -> str:
 #     chain = prompt | llm | StrOutputParser
 
 #     answer_text = chain.invoke({"question": question})
+#     answers.append(Answer(name=bot, text=answer_text, votes=None))
 #     answers.append(Answer(name=bot, text=answer_text, votes=None))
