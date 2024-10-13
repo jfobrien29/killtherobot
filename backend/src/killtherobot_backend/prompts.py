@@ -22,7 +22,7 @@ These questions and answers worked well in the past. Match the style of the answ
 {good_qa_pairs}
 ```
 
-Respond with exactly 2, 3, 4, 5, or 6 words.
+Respond with exactly 2, 3, or 4 words. Respond in a casual way.
 """.strip()
 
 eliza_system = """
@@ -42,7 +42,7 @@ These questions and answers worked well in the past. Match the style of the answ
 {good_qa_pairs}
 ```
 
-Respond with exactly 2, 3, 4, 5, or 6 words.
+Respond with exactly 2, 3, or 4 words. Respond in a casual way.
 """.strip()
 
 john_system = """
@@ -62,7 +62,7 @@ These questions and answers worked well in the past. Match the style of the answ
 {good_qa_pairs}
 ```
 
-Respond with exactly 2, 3, 4, 5, or 6 words.
+Respond with exactly 2, 3, or 4 words. Respond in a casual way.
 """.strip()
 
 bots = {
