@@ -2,7 +2,7 @@ import logging
 import os
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi import FastAPI, Header, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -45,8 +45,11 @@ async def get_answer(game: Game, api_key: str = Header(...)) -> list[Answer]:
     """
     print("api_key = ", api_key)
     print("BACKEND_API_KEY = ", BACKEND_API_KEY)
-    if api_key != os.getenv("OPENAI_API_KEY"):
-        raise HTTPException(status_code=401, detail="Invalid API key")
+    if api_key != BACKEND_API_KEY:
+        print("validation failure")
+        # raise HTTPException(status_code=401, detail="Invalid API key")
+    else:
+        print("validation success")
 
     # answers = get_answers(game)
 
