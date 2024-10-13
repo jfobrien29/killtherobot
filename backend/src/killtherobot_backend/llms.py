@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import PromptTemplate, SystemMessagePromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.runnables import ConfigurableField
 from langchain_core.runnables.base import RunnableSerializable
 from langchain_openai import ChatOpenAI
@@ -94,16 +94,17 @@ def answer_question(game: Game) -> Answer:
     answers = []
     for bot in live_bots:
         system_message = prompt_templates[bot]
-        prompt = PromptTemplate.from_template("Say {foo}")
+        human_message = PromptTemplate.from_template("Say {foo}")
+        human_message.format(good_qa_pairs=good_qa_pairs)
 
-        prompt.format(good_qa_pairs=good_qa_pairs)
-
-        chain = (
-            SystemMessagePromptTemplate.from_template(system_message)
-            | prompt
-            | llm
-            | StrOutputParser
+        prompt = ChatPromptTemplate(
+            [
+                ("system", system_message),
+                ("human", human_message),
+            ]
         )
+
+        chain = prompt | llm | StrOutputParser
 
         answer_text = chain.invoke({"question": question})
         answers.append(Answer(name=bot, text=answer_text, votes=None))
@@ -123,6 +124,9 @@ def get_answers(game: Game) -> str:
                 answers.append(f"- Answer {j}: {a.text}")
             good_qa_pairs.append("\n".join(answers))
 
+    good_qa_pairs_str = "\n\n".join(good_qa_pairs)
+
+    return good_qa_pairs_str
     good_qa_pairs_str = "\n\n".join(good_qa_pairs)
 
     return good_qa_pairs_str
