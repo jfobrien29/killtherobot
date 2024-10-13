@@ -91,7 +91,7 @@ def answer_question(game: Game) -> list[Answer]:
 
     answers = []
     for bot in live_bots:
-        system_message = prompt_templates[bot]["system_message"]
+        system_message = prompt_templates[bot]["system"]
         human_message = prompt_templates[bot]["prompt"].format(
             question=question, good_qa_pairs=good_qa_pairs
         )
