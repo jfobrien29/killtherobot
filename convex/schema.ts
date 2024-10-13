@@ -74,6 +74,7 @@ export default defineSchema({
             votes: v.array(v.string()),
           }),
         ),
+        eliminatedPlayer: v.string(),
       }),
     ),
     currentRound: v.number(),

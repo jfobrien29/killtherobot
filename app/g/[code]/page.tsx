@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { GAME_STAGE } from '@/convex/game';
 import { Bot, PersonStanding } from 'lucide-react';
 import { HumanOrBot, PlayerType } from '@/convex/schema';
+import clsx from 'clsx';
 
 // const getPlayerssWhoGaveTwoAnswers = (game: any): string[] => {
 //   if (!game) return [];
@@ -92,6 +93,12 @@ export default function Home() {
             {game?.stage === GAME_STAGE.VOTING && (
               <div className="text-sm text-gray-500">Voting...</div>
             )}
+            {game?.stage === GAME_STAGE.REVEAL && (
+              <div className="text-sm text-gray-500">Reveal!</div>
+            )}
+            {game?.stage === GAME_STAGE.GAME_OVER && (
+              <div className="text-sm text-gray-500">Game Over!</div>
+            )}
           </div>
         </div>
 
@@ -150,9 +157,18 @@ export default function Home() {
                   {currentRound.answers.map((item, index) => (
                     <div
                       key={index}
-                      className="flex-1 p-6 rounded-lg shadow-md transform hover:scale-105 transition-all duration-300 flex flex-col justify-between w-full bg-gradient-to-br from-white to-gray-100"
+                      className={clsx(
+                        'flex-1 p-6 rounded-lg shadow-md transform hover:scale-105 transition-all duration-300 flex flex-col justify-between w-full bg-gradient-to-br from-white to-gray-100',
+                      )}
                     >
-                      <div className="flex justify-center items-center w-full font-semibold text-xl text-gray-700 my-4 px-3 py-6 bg-white rounded-lg shadow-inner">
+                      <div
+                        className={clsx(
+                          'flex justify-center items-center w-full font-semibold text-xl text-gray-700 my-4 px-3 py-6 bg-white rounded-lg shadow-inner',
+                          game.stage === GAME_STAGE.REVEAL &&
+                            item.name === currentRound?.eliminatedPlayer &&
+                            'bg-red-500',
+                        )}
+                      >
                         {item.text}
                       </div>
                     </div>

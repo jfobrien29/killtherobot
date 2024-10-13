@@ -201,7 +201,7 @@ const Reveal = () => {
   return (
     <div>
       <div className="w-full flex justify-center">
-        <div>Look at those results!</div>
+        <div>Look who you eliminated!</div>
       </div>
       {!isAdmin && (
         <div className="w-full flex justify-center italic mt-2 text-sm">
@@ -211,7 +211,7 @@ const Reveal = () => {
       {isAdmin && (
         <div className="flex w-full justify-center mt-4">
           <Button className="w-fit" onClick={() => nextMatchup({ code: code as string })}>
-            Next Matchup (only visible to you)
+            Start Next Round (only visible to you)
           </Button>
         </div>
       )}

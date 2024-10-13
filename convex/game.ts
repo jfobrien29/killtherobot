@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { v } from 'convex/values';
 import { internalMutation, internalQuery, mutation, query } from './_generated/server';
 import { internal } from './_generated/api';
@@ -162,6 +163,7 @@ export const start = mutation({
         {
           question: 'This is the question to answer for round 1',
           answers: [],
+          eliminatedPlayer: '',
         },
       ],
     });
@@ -302,6 +304,10 @@ export const vote = mutation({
         },
       ],
     });
+
+    await ctx.scheduler.runAfter(0, internal.game.checkIfAllVotesAreIn, {
+      gameId: game._id,
+    });
   },
 });
 
@@ -315,18 +321,85 @@ export const checkIfAllVotesAreIn = internalMutation({
     }
 
     const numAliveHumans = game.humans.filter((human) => human.isAlive).length;
-
-    const currentRound = game.rounds[game.currentRound];
+    const currentRound = game.rounds[game.currentRound]!;
 
     // Add up the number of votes accross all answers in the current round
-    const totalVotes = currentRound.answers.reduce((acc, answer) => acc + answer.votes.length, 0);
+    const totalVotes = currentRound.answers.map((answer) => answer.votes).flat().length;
 
-    if (totalVotes === numAliveHumans) {
+    console.log('totalVotes', totalVotes);
+    console.log('numAliveHumans', numAliveHumans);
+    if (totalVotes === numAliveHumans * 2 && game.stage === GAME_STAGE.VOTING) {
       // Do processing on who lost here
+      let losingAnswerAmount = currentRound.answers[0].votes.length;
+      for (const answer of currentRound.answers) {
+        if (answer.votes.length > losingAnswerAmount) {
+          losingAnswerAmount = answer.votes.length;
+        }
+      }
 
-      // Remove the dead player from the game
+      // Now put any ties in an array
+      const tiedAnswers = currentRound.answers.filter(
+        (answer) => answer.votes.length === losingAnswerAmount,
+      );
+
+      let losingAnswer: any;
+      if (tiedAnswers.length > 1) {
+        // There were ties, pick the first non-bot answer
+        losingAnswer = tiedAnswers.find(
+          (answer) => !game.bots.some((bot) => bot?.name === answer?.name),
+        );
+      } else {
+        // If no ties, it's the first
+        losingAnswer = tiedAnswers[0];
+      }
+
+      const isLoserHuman = game.humans.some((human) => human.name === losingAnswer.name);
+
+      if (isLoserHuman) {
+        // Mark the losing player as dead
+        await ctx.db.patch(game._id, {
+          humans: game.humans.map((human) =>
+            human.name === losingAnswer.name ? { ...human, isAlive: false } : human,
+          ),
+          rounds: [
+            ...game.rounds.slice(0, game.currentRound),
+            {
+              ...currentRound,
+              eliminatedPlayer: losingAnswer.name,
+            },
+          ],
+        });
+      } else {
+        // Mark the losing bot as dead
+        await ctx.db.patch(game._id, {
+          bots: game.bots.map((bot) =>
+            bot.name === losingAnswer.name ? { ...bot, isAlive: false } : bot,
+          ),
+          rounds: [
+            ...game.rounds.slice(0, game.currentRound),
+            {
+              ...currentRound,
+              eliminatedPlayer: losingAnswer.name,
+            },
+          ],
+        });
+      }
 
       // Determine if the robots won or not
+      const numBotsAlive = game.bots.filter((bot) => bot.isAlive).length;
+      const numHumansAlive = game.humans.filter((human) => human.isAlive).length;
+
+      if (numBotsAlive === 0) {
+        await ctx.db.patch(game._id, {
+          stage: GAME_STAGE.GAME_OVER,
+        });
+        return;
+      } else if (numHumansAlive <= 1) {
+        await ctx.db.patch(game._id, {
+          stage: GAME_STAGE.GAME_OVER,
+        });
+        return;
+      }
 
       // We can move to the reveal stage
       await ctx.db.patch(game._id, {
@@ -351,9 +424,14 @@ export const nextRound = mutation({
     await ctx.db.patch(game._id, {
       rounds: [
         ...game.rounds,
-        { question: `This is the question for round ${game.currentRound + 1}`, answers: [] },
+        {
+          question: `This is the question for round ${game.currentRound + 1}`,
+          answers: [],
+          eliminatedPlayer: '',
+        },
       ],
       currentRound: game.currentRound + 1,
+      stage: GAME_STAGE.GAME_OVER,
     });
   },
 });
