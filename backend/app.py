@@ -1,8 +1,11 @@
+import logging
 import os
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from killtherobot_backend.models import Answer, Game
 
@@ -27,7 +30,7 @@ async def healthz():
 
 
 @app.post("/get_answer")
-async def answer_question(game: Game, api_key: str = Header(...)) -> list[Answer]:
+async def get_answer(game: Game, api_key: str = Header(...)) -> list[Answer]:
     """Generate an answer for the current round's question using OpenAI API.
 
     Args:
@@ -40,8 +43,13 @@ async def answer_question(game: Game, api_key: str = Header(...)) -> list[Answer
     Raises:
         HTTPException: If the API key is invalid (401 Unauthorized).
     """
-    if api_key != os.getenv("OPENAI_API_KEY"):
-        raise HTTPException(status_code=401, detail="Invalid API key")
+    print("api_key = ", api_key)
+    print("BACKEND_API_KEY = ", BACKEND_API_KEY)
+    if api_key != BACKEND_API_KEY:
+        print("validation failure")
+        # raise HTTPException(status_code=401, detail="Invalid API key")
+    else:
+        print("validation success")
 
     # answers = get_answers(game)
 
@@ -53,3 +61,14 @@ async def answer_question(game: Game, api_key: str = Header(...)) -> list[Answer
     ]
 
     return answers
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    raw_body = await request.body()
+    logging.error(f"Invalid request body: {raw_body.decode('utf-8')}")
+
+    return JSONResponse(
+        status_code=400,
+        content={"detail": exc.errors(), "body": raw_body.decode("utf-8")},
+    )
