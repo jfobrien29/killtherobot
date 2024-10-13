@@ -354,10 +354,10 @@ export const checkIfAllVotesAreIn = internalMutation({
 
       let losingAnswer: any;
       if (tiedAnswers.length > 1) {
-        // There were ties, pick the first non-bot answer
-        losingAnswer = tiedAnswers.find(
-          (answer) => !game.bots.some((bot) => bot?.name === answer?.name),
-        );
+        // There were ties, pick the first non-bot answer (or the first answer if all are bots)
+        losingAnswer =
+          tiedAnswers.find((answer) => !game.bots.some((bot) => bot?.name === answer?.name)) ||
+          tiedAnswers[0];
       } else {
         // If no ties, it's the first
         losingAnswer = tiedAnswers[0];
@@ -395,24 +395,30 @@ export const checkIfAllVotesAreIn = internalMutation({
         });
       }
 
+      const updatedGame = await ctx.db.get(game._id);
+
+      if (!updatedGame) {
+        throw new Error('Game not found');
+      }
+
       // Determine if the robots won or not
-      const numBotsAlive = game.bots.filter((bot) => bot.isAlive).length;
-      const numHumansAlive = game.humans.filter((human) => human.isAlive).length;
+      const numBotsAlive = updatedGame.bots.filter((bot) => bot.isAlive).length;
+      const numHumansAlive = updatedGame.humans.filter((human) => human.isAlive).length;
 
       if (numBotsAlive === 0) {
-        await ctx.db.patch(game._id, {
+        await ctx.db.patch(updatedGame._id, {
           stage: GAME_STAGE.GAME_OVER,
         });
         return;
       } else if (numHumansAlive <= 1) {
-        await ctx.db.patch(game._id, {
+        await ctx.db.patch(updatedGame._id, {
           stage: GAME_STAGE.GAME_OVER,
         });
         return;
       }
 
       // We can move to the reveal stage
-      await ctx.db.patch(game._id, {
+      await ctx.db.patch(updatedGame._id, {
         stage: GAME_STAGE.REVEAL,
       });
     }

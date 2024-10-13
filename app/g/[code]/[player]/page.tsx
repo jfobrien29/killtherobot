@@ -186,7 +186,7 @@ const Voting = () => {
             <Button
               variant={selectedVotes.includes(answer.text) ? 'secondary' : 'outline'}
               onClick={() => selectVote(answer.text)}
-              className="w-full"
+              className="w-full text-wrap h-fit"
             >
               {answer.text}
             </Button>

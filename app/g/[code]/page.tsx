@@ -226,11 +226,12 @@ export default function Home() {
               <div className="p-6">
                 {game?.humans.map((human) => (
                   <div key={human.name} className="text-lg mb-2 flex items-center text-gray-700">
-                    <PersonStanding className="mr-2" /> {human.name}
+                    <PersonStanding className="mr-2" /> <span className="">{human.name}</span>
                     {currentRound?.answers
                       .map((answer) => answer.votes)
                       .flat()
                       .includes(human.name) && <span className="ml-2 text-green-500">👍</span>}
+                    {!human.isAlive && <span className="ml-2 text-red-500">💀</span>}
                   </div>
                 ))}
               </div>
