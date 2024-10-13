@@ -188,10 +188,8 @@ export default function Home() {
                     >
                       <div
                         className={clsx(
-                          'flex flex-col justify-center items-center w-full font-semibold text-xl text-gray-700 my-4 px-3 py-6 bg-white rounded-lg shadow-inner',
-                          game.stage === GAME_STAGE.REVEAL &&
-                            item.name === currentRound?.eliminatedPlayer &&
-                            'bg-red-500',
+                          'flex flex-col justify-center items-center w-full font-semibold text-xl text-gray-700 my-4 px-3 py-6  rounded-lg shadow-inner',
+                          item.name === currentRound?.eliminatedPlayer ? 'bg-red-500' : 'bg-white',
                         )}
                       >
                         <div>{item.text}</div>
