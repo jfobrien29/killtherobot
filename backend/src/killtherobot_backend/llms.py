@@ -49,7 +49,7 @@ def answer_question(
     return Answer(name="AI", text=content, votes=[])
 
 
-def get_answers(game: Game) -> list[Answer]:
+def get_answers(game: Game) -> str:
     question = game.rounds[-1].question
     names = [bot.name for bot in game.bots]
 
@@ -59,13 +59,11 @@ def get_answers(game: Game) -> list[Answer]:
     for i, r in enumerate(game.rounds):
         good_qa_pairs.append(f"Question {i}: {r.question}")
         for j, a in enumerate(r.answers):
-            if a.votes is not None and any(human in a.votes for human in live_humans):
-                good_qa_pairs.append(f"- Answer {j}: {a.text}")
-            else:
-                good_qa_pairs.pop()
+            answers = []
+            if any(human in a.votes for human in live_humans):
+                answers.append(f"- Answer {j}: {a.text}")
+            good_qa_pairs.append("\n".join(answers))
 
     good_qa_pairs_str = "\n\n".join(good_qa_pairs)
 
-    return [
-        Answer(name=name, text=f"answer to {question}", votes=None) for name in names
-    ]
+    return good_qa_pairs_str
