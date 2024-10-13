@@ -267,11 +267,21 @@ export const checkIfAllAnswersAreIn = internalMutation({
     const numHumans = game.humans.filter((human) => human.isAlive).length;
     const numBots = game.bots.filter((bot) => bot.isAlive).length;
     const currentRound = game.rounds[game.currentRound];
+    const shuffledAnswers = [...currentRound.answers].sort(() => Math.random() - 0.5);
 
     const totalAlive = numHumans + numBots;
     if (currentRound.answers.length === totalAlive) {
       await ctx.db.patch(game._id, {
         stage: GAME_STAGE.VOTING,
+
+        rounds: [
+          ...game.rounds.slice(0, game.currentRound),
+          {
+            ...currentRound,
+            answers: shuffledAnswers,
+          },
+          ...game.rounds.slice(game.currentRound + 1),
+        ],
       });
     }
   },

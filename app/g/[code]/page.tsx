@@ -102,6 +102,10 @@ export default function Home() {
           </div>
         </div>
 
+        {game?.stage === GAME_STAGE.NEXT_ROUND_LOADING && (
+          <div className="text-sm text-gray-500">Loading next round...</div>
+        )}
+
         {(game?.stage === GAME_STAGE.PLAYERS_JOINING ||
           game?.stage === GAME_STAGE.GAME_STARTING ||
           game?.stage === GAME_STAGE.ENTER_RESPONSES) && (
@@ -117,13 +121,18 @@ export default function Home() {
                         .map((answer) => answer.name)
                         .flat()
                         .includes(human.name) && <span className="ml-2 text-green-500">👍</span>}
+                      {!human.isAlive && (
+                        <span className="ml-2" title="Eliminated">
+                          💀
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-all hover:shadow-2xl border border-gray-300">
-                <div className="bg-zinc-800 text-white text-xl font-semibold py-3 px-6">Bots</div>
+                <div className="bg-zinc-800 text-white text-xl font-semibold py-3 px-6">Robots</div>
                 <div className="p-6">
                   {game?.bots.map((bot) => (
                     <div key={bot.name} className="text-lg mb-2 flex items-center text-gray-700">
@@ -132,6 +141,11 @@ export default function Home() {
                         .map((answer) => answer.name)
                         .flat()
                         .includes(bot.name) && <span className="ml-2 text-green-500">👍</span>}
+                      {!bot.isAlive && (
+                        <span className="ml-2" title="Eliminated">
+                          💀
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -141,6 +155,17 @@ export default function Home() {
             {game.stage === GAME_STAGE.PLAYERS_JOINING && (
               <div className="flex-1 flex flex-col items-center justify-center max-w-[400px]">
                 {qrCode && <img src={qrCode} alt="QR Code" className="w-full h-auto" />}
+              </div>
+            )}
+            {game.stage === GAME_STAGE.ENTER_RESPONSES && (
+              <div className="flex-1 flex flex-col items-center justify-center max-w-[400px] bg-gradient-to-r from-blue-100 to-purple-100 p-8 rounded-xl shadow-lg">
+                <h2 className="text-xl font-bold text-center text-gray-800 mb-4">
+                  Current Question:
+                </h2>
+                <p className="text-2xl text-center text-gray-700 italic">
+                  {currentRound?.question}
+                </p>
+                <div className="mt-6 w-16 h-1 bg-indigo-500 rounded-full"></div>
               </div>
             )}
           </div>

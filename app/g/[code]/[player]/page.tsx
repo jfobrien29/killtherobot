@@ -273,6 +273,7 @@ export default function PlayerPage() {
             {game.stage === GAME_STAGE.ENTER_RESPONSES && <Answering />}
             {game.stage === GAME_STAGE.VOTING && <Voting />}
             {game.stage === GAME_STAGE.REVEAL && <Reveal />}
+            {game.stage === GAME_STAGE.NEXT_ROUND_LOADING && <div>Loading next round...</div>}
 
             {game.stage === GAME_STAGE.PAUSED && <Waiting />}
             {game.stage === GAME_STAGE.SHOW_RANKINGS && <ShowRankings />}

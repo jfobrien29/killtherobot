@@ -52,9 +52,14 @@ export const botCreateAnswers = internalAction({
 
       await ctx.runMutation(internal.game.updateWithBotsAnswers, {
         gameId,
-        answers: responseAnswers.filter((answer: any) =>
-          botsAlive.some((bot: any) => bot.name === answer.name),
-        ),
+        answers: responseAnswers
+          .filter((answer: any) => botsAlive.some((bot: any) => bot.name === answer.name))
+          .map((answer: any) => {
+            return {
+              name: answer.name,
+              text: answer.text,
+            };
+          }),
       });
     } catch (e) {
       console.error('Error creating answers', e);
