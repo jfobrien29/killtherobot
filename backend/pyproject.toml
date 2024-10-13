@@ -5,7 +5,9 @@ description = "Backend for Kill the Robot game"
 authors = [
     {name = "Sean Daly", email = "the_sean_c@fastmail.com"},
 ]
-dependencies = []
+dependencies = [
+    "fastapi>=0.115.2",
+]
 requires-python = ">=3.11"
 readme = "README.md"
 license = {text = "MIT"}
