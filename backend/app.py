@@ -7,6 +7,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from killtherobot_backend.llms import answer_question
 from killtherobot_backend.models import Answer, Game
 
 _ = load_dotenv()
@@ -51,14 +52,14 @@ async def get_answer(game: Game, api_key: str = Header(...)) -> list[Answer]:
     else:
         print("validation success")
 
-    # answers = get_answers(game)
+    answers = answer_question(game)
 
-    question = game.rounds[-1].question
-    names = [bot.name for bot in game.bots]
+    # question = game.rounds[-1].question
+    # names = [bot.name for bot in game.bots]
 
-    answers = [
-        Answer(name=name, text=f"answer to {question}", votes=None) for name in names
-    ]
+    # answers = [
+    #     Answer(name=name, text=f"answer to {question}", votes=None) for name in names
+    # ]
 
     return answers
 
