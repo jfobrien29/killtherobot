@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from killtherobot_backend.llms import get_answers
 from killtherobot_backend.models import Answer, Game
 
 _ = load_dotenv()
@@ -44,8 +43,13 @@ async def answer_question(game: Game, api_key: str = Header(...)) -> list[Answer
     if api_key != os.getenv("OPENAI_API_KEY"):
         raise HTTPException(status_code=401, detail="Invalid API key")
 
+    # answers = get_answers(game)
+
     question = game.rounds[-1].question
     names = [bot.name for bot in game.bots]
-    answers = get_answers(question, names)
+
+    answers = [
+        Answer(name=name, text=f"answer to {question}", votes=None) for name in names
+    ]
 
     return answers
