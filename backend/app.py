@@ -43,6 +43,8 @@ async def get_answer(game: Game, api_key: str = Header(...)) -> list[Answer]:
     Raises:
         HTTPException: If the API key is invalid (401 Unauthorized).
     """
+    print("api_key = ", api_key)
+    print("BACKEND_API_KEY = ", BACKEND_API_KEY)
     if api_key != os.getenv("OPENAI_API_KEY"):
         raise HTTPException(status_code=401, detail="Invalid API key")
 
