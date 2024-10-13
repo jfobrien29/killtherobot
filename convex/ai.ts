@@ -8,6 +8,21 @@ const anthropic = new Anthropic();
 
 const openai = new OpenAI();
 
+interface Answer {
+  name: string;
+  text: string;
+}
+
+const DEFAULT_ANSWERS = [
+  'Im not the robot!',
+  'Please please please dont kill me',
+  'I. am. not. a. robot.',
+];
+
+const getRandomAnswer = () => {
+  return DEFAULT_ANSWERS[Math.floor(Math.random() * DEFAULT_ANSWERS.length)];
+};
+
 export const botCreateAnswers = internalAction({
   args: { gameId: v.id('games') },
   handler: async (ctx, { gameId }) => {
@@ -19,6 +34,17 @@ export const botCreateAnswers = internalAction({
     }
 
     // TODO: This is where we would create answers for the bots
+    // Send out response and expect an array of answer back
+
+    const answers: Answer[] = game.bots.map((bot) => ({
+      name: bot.name,
+      text: getRandomAnswer(),
+    }));
+
+    await ctx.runMutation(internal.game.updateWithBotsAnswers, {
+      gameId,
+      answers,
+    });
   },
 });
 

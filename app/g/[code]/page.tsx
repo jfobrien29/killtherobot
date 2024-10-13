@@ -38,10 +38,12 @@ export default function Home() {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const router = useRouter();
   // const setStage = useMutation(api.game.setStage);
-  const nextMatchup = useMutation(api.game.nextMatchup);
+  const nextRound = useMutation(api.game.nextRound);
   const restartGame = useMutation(api.game.restartGame);
   const game = useQuery(api.game.get, { code: code as string });
   const [origin, setOrigin] = useState<string | null>(null);
+
+  const currentRound = game?.rounds[game?.currentRound];
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -104,7 +106,10 @@ export default function Home() {
                   {game?.humans.map((human) => (
                     <div key={human.name} className="text-lg mb-2 flex items-center text-gray-700">
                       <PersonStanding className="mr-2" /> {human.name}{' '}
-                      {[].includes(human.name) && <span className="ml-2 text-green-500">👍</span>}
+                      {currentRound?.answers
+                        .map((answer) => answer.name)
+                        .flat()
+                        .includes(human.name) && <span className="ml-2 text-green-500">👍</span>}
                     </div>
                   ))}
                 </div>
@@ -116,7 +121,10 @@ export default function Home() {
                   {game?.bots.map((bot) => (
                     <div key={bot.name} className="text-lg mb-2 flex items-center text-gray-700">
                       <Bot className="mr-2" /> {bot.name}{' '}
-                      {[].includes(bot.name) && <span className="ml-2 text-green-500">👍</span>}
+                      {currentRound?.answers
+                        .map((answer) => answer.name)
+                        .flat()
+                        .includes(bot.name) && <span className="ml-2 text-green-500">👍</span>}
                     </div>
                   ))}
                 </div>
@@ -133,57 +141,20 @@ export default function Home() {
 
         {(game?.stage === GAME_STAGE.VOTING || game?.stage === GAME_STAGE.REVEAL) && (
           <div className="w-full flex flex-col items-center">
-            {game.matchup !== undefined && game.matchups && game.matchups[game.matchup] && (
-              <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-all border border-gray-300 mb-6 max-w-[800px] w-full">
+            {currentRound && (
+              <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-all border border-gray-300 mb-6 max-w-[1000px] w-full">
                 <div className="bg-zinc-800 text-white text-xl font-semibold py-3 px-6 w-full">
-                  {game.matchups[game.matchup].prompt}
+                  {currentRound?.question}
                 </div>
-                <div className="p-6 flex justify-between gap-4">
-                  {[
-                    {
-                      answer: game.matchups[game.matchup].player1Answer,
-                      name: game.matchups[game.matchup].player1,
-                      type: game.matchups[game.matchup].player1Type,
-                    },
-                    {
-                      answer: game.matchups[game.matchup].player2Answer,
-                      name: game.matchups[game.matchup].player2,
-                      type: game.matchups[game.matchup].player2Type,
-                    },
-                  ].map((item, index) => (
+                <div className="p-6 gap-4 grid grid-cols-3">
+                  {currentRound.answers.map((item, index) => (
                     <div
                       key={index}
                       className="flex-1 p-6 rounded-lg shadow-md transform hover:scale-105 transition-all duration-300 flex flex-col justify-between w-full bg-gradient-to-br from-white to-gray-100"
                     >
-                      {game.stage === GAME_STAGE.REVEAL && (
-                        <div className="flex items-center justify-between border-b border-gray-300 pb-3 mb-4">
-                          <p className="font-bold text-lg text-gray-800">{item.name}</p>
-                          {item.type === PlayerType.HUMAN ? (
-                            <PersonStanding size={24} />
-                          ) : (
-                            <Bot size={24} />
-                          )}
-                        </div>
-                      )}
                       <div className="flex justify-center items-center w-full font-semibold text-xl text-gray-700 my-4 px-3 py-6 bg-white rounded-lg shadow-inner">
-                        {item.answer}
+                        {item.text}
                       </div>
-                      {game.stage === GAME_STAGE.REVEAL && (
-                        <div className="flex justify-center items-center mt-4">
-                          <div className="w-full bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm animate-fadeIn duration-1000">
-                            <span className="font-semibold text-blue-800 mb-2">Votes:</span>{' '}
-                            <span className="text-sm text-gray-600 italic">
-                              {item.answer === game.matchups[game.matchup].player1Answer
-                                ? game.matchups[game.matchup].votes1
-                                    ?.filter((n) => n !== item.name)
-                                    .join(', ')
-                                : game.matchups[game.matchup].votes2
-                                    ?.filter((n) => n !== item.name)
-                                    .join(', ')}
-                            </span>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
@@ -192,31 +163,24 @@ export default function Home() {
 
             {game?.stage === GAME_STAGE.REVEAL && (
               <div className="flex justify-center pb-8">
-                <Button onClick={() => nextMatchup({ code: code as string })}>Next Matchup</Button>
+                <Button onClick={() => nextRound({ code: code as string })}>Next Round</Button>
               </div>
             )}
 
             <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-all hover:shadow-2xl border border-gray-300 mb-6 max-w-[800px] w-full">
-              <div className="bg-zinc-800 text-white text-xl font-semibold py-3 px-6">Players</div>
+              <div className="bg-zinc-800 text-white text-xl font-semibold py-3 px-6">
+                Human Players
+              </div>
               <div className="p-6">
                 {game?.humans.map((human) => (
                   <div key={human.name} className="text-lg mb-2 flex items-center text-gray-700">
                     <PersonStanding className="mr-2" /> {human.name}
-                    {(game.matchups[game.matchup].votes1!.includes(human.name) ||
-                      game.matchups[game.matchup].votes2!.includes(human.name)) && (
-                      <span className="ml-2 text-green-500">👍</span>
-                    )}
+                    {currentRound?.answers
+                      .map((answer) => answer.votes)
+                      .flat()
+                      .includes(human.name) && <span className="ml-2 text-green-500">👍</span>}
                   </div>
                 ))}
-                {/* {game?.bots.map((bot) => (
-                  <div key={bot.name} className="text-lg mb-2 flex items-center text-gray-700">
-                    <Bot className="mr-2" /> {bot.name}
-                    {(game.matchups[game.matchup].votes1!.includes(bot.name) ||
-                      game.matchups[game.matchup].votes2!.includes(bot.name)) && (
-                      <span className="ml-2 text-green-500">👍</span>
-                    )}
-                  </div>
-                ))} */}
               </div>
             </div>
           </div>
@@ -275,7 +239,7 @@ export default function Home() {
 
         {game?.stage === GAME_STAGE.GAME_OVER && <div>Game Over</div>}
 
-        {/* <code className="mt-64 whitespace-pre max-w-[1000px]">{JSON.stringify(game, null, 2)}</code> */}
+        <code className="mt-64 whitespace-pre max-w-[1000px]">{JSON.stringify(game, null, 2)}</code>
 
         {/* <div className="mt-48 flex gap-2">
         <Button
