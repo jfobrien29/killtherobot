@@ -1,10 +1,10 @@
 FROM python:3.12-slim
 
-WORKDIR /app
-COPY . /app
-
 RUN pip install pdm
 RUN pdm install --no-lock --no-editable
+
+WORKDIR /app
+COPY . /app
 
 EXPOSE 8000
 

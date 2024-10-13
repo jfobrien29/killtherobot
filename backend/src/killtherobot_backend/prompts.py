@@ -71,5 +71,5 @@ bots = {
     "John": {"system": john_system, "prompt": john_prompt},
     "Alan": {"system": ada_system, "prompt": ada_prompt},
     "Grace": {"system": eliza_system, "prompt": eliza_prompt},
-    "Time": {"system": john_system, "prompt": john_prompt},
+    "Tim": {"system": john_system, "prompt": john_prompt},
 }

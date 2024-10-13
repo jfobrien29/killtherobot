@@ -98,6 +98,8 @@ def answer_question(game: Game) -> list[Answer]:
 
         prompt = system_message + "\n\n" + human_message
 
+        print(f"{bot}: {prompt}")
+
         answer_text = llm.invoke(prompt).content
         answers.append(Answer(name=bot, text=answer_text, votes=None))
 
