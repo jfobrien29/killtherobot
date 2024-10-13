@@ -66,14 +66,14 @@ export const botCreateAnswers = internalAction({
       console.error('Error creating answers', e);
       try {
         const aiAnswers = await Promise.all(
-          [1, 2, 3].map(() => {
+          [1, 2].map(() => {
             const randomNumberBetween1And5 = Math.floor(Math.random() * 5) + 1;
             const types = ['funny', 'clever', 'concise', 'cynical', 'bad at writing', 'lazy'];
-            const type = types[Math.floor(Math.random() * types.length)];
+            const myType = types[Math.floor(Math.random() * types.length)];
             return getAnthropicResponse(
               'You are a helpful assistant. Response with a one line answer. You are a human on a cellphone, so keep it short and concise.',
-              `You are ${type} and only respond with ${randomNumberBetween1And5} words. Write an answer to this question by filling in the blank: ${game.rounds[game.rounds.length - 1].question}`,
-              0.8,
+              `You  are a ${myType} and only respond with ${randomNumberBetween1And5} words. Write an answer to this question by filling in the blank: ${game.rounds[game.rounds.length - 1].question}`,
+              0.6,
             );
           }),
         );
@@ -120,60 +120,24 @@ export const generateQuestionsForGame = internalAction({
 
     const question = await getAnthropicResponse(
       `You are a helpful assistant. Response with a one line answer.`,
-      `Please create a one line exciting, adventure question in the style of Cards Against Humanity where there is one blank to fill, using the template of hero_journey_stages below, the universe=${theme}, the current current_question=1.
-
+      `Please create and return one line exiting, action-packed question in the style of Cards Against Humanity where there is one blank to fill, using the template of hero_journey_stages below,  the theme=${theme} and the answer from last_voted_answer below. Never reference the current stage name in the question created. Do not return meta observations on what you do.
 game_state:
-  current_question:
   total_questions: 12
-  user_score: 0
-  universe: 
-  hero_journey_stage: "ordinary_world"
-  last_voted_answer: ""
-  user_response_style:
-    average_length: 0
-    tone: "neutral"
-    complexity: "medium"
-
+  theme: ${theme}
+  hero_journey_stage: 8
 hero_journey_stages:
-  - ordinary_world
-  - call_to_adventure
-  - refusal_of_the_call
-  - meeting_the_mentor
-  - crossing_the_threshold
-  - tests_allies_enemies
-  - approach_to_inmost_cave
-  - ordeal
-  - reward
-  - the_road_back
-  - resurrection
-  - return_with_elixir
-
-questions:
-  # [Previous questions remain the same]
-
-user_responses: []
-
-ai_responses: []
-
-process_input:
-  - get_current_question
-  - present_options
-  - collect_user_votes
-  - determine_winning_answer
-  - analyze_user_responses
-  - update_hero_journey_stage
-  - generate_ai_response
-  - update_game_state
-  - check_game_end
-
-generate_output:
-  - format_ai_response_with_hero_journey
-  - present_next_question
-  - display_game_summary
-
-update_hero_journey_stage:
-  - determine_next_stage
-  - apply_stage_to_response`,
+  1. ordinary_world
+  2. call_to_adventure
+  3. refusal_of_the_call
+  4. meeting_the_mentor
+  5. crossing_the_threshold
+  6. tests_allies_enemies
+  7. approach_to_inmost_cave
+  8. ordeal
+  9. reward
+  10. the_road_back
+  11. resurrection
+  12. return_with_elixir`,
     );
 
     await ctx.runMutation(internal.game.finishInitialSetup, {
@@ -207,56 +171,26 @@ export const generateNextQuestionForGame = internalAction({
 
     const question = await getAnthropicResponse(
       `You are a helpful assistant. Response with a one line answer.`,
-      `Please create a one line exciting, adventure question in the style of Cards Against Humanity where there is one blank to fill, using the template of hero_journey_stages below, the universe=${game.theme}, the current current_question=${game.rounds.length + 1}.
-
+      `Please create and return one line exiting, action-packed question in the style of Cards Against Humanity where there is one blank to fill, using the template of hero_journey_stages below,  the theme=${game.theme} and the answer from last_voted_answer below. Never reference the current stage name in the question created. Do not return meta observations on what you do.
 game_state:
-  current_question:
   total_questions: 12
-  user_score: 0
-  universe: 
-  hero_journey_stage: "ordinary_world"
-  last_voted_answer: ""
-  user_response_style:
-    average_length: 0
-    tone: "neutral"
-    complexity: "medium"
-
+  theme: ${game.theme}
+  hero_journey_stage: 8
+  last_question: ${game.rounds[game.rounds.length - 1].question}
+  last_voted_answer: ${game.rounds[game.rounds.length - 1].answers[0].text}
 hero_journey_stages:
-  - 1 ordinary_world
-  - 2 call_to_adventure
-  - 3 refusal_of_the_call
-  - 4 meeting_the_mentor
-  - 5 crossing_the_threshold
-  - 6 tests_allies_enemies
-  - 7 approach_to_inmost_cave
-  - 8 ordeal
-  - 9 reward
-  - 10 the_road_back
-  - 11 resurrection
-  - 12 return_with_elixir
-
-questions:
-  ${game.rounds.map((round) => `- ${round.question}`).join('\n')}
-
-process_input:
-  - get_current_question
-  - present_options
-  - collect_user_votes
-  - determine_winning_answer
-  - analyze_user_responses
-  - update_hero_journey_stage
-  - generate_ai_response
-  - update_game_state
-  - check_game_end
-
-generate_output:
-  - format_ai_response_with_hero_journey
-  - present_next_question
-  - display_game_summary
-
-update_hero_journey_stage:
-  - determine_next_stage
-  - apply_stage_to_response`,
+  1. ordinary_world
+  2. call_to_adventure
+  3. refusal_of_the_call
+  4. meeting_the_mentor
+  5. crossing_the_threshold
+  6. tests_allies_enemies
+  7. approach_to_inmost_cave
+  8. ordeal
+  9. reward
+  10. the_road_back
+  11. resurrection
+  12. return_with_elixir`,
     );
 
     await ctx.runMutation(internal.game.finishNextRoundLoading, {
@@ -270,11 +204,7 @@ update_hero_journey_stage:
   },
 });
 
-export const getAnthropicResponse = async (
-  system: string,
-  user: string,
-  temperature: number = 0.5,
-) => {
+export const getAnthropicResponse = async (system: string, user: string, temperature = 0.5) => {
   const msg = await anthropic.messages.create({
     model: 'claude-3-5-sonnet-20240620',
     max_tokens: 5000,

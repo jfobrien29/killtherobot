@@ -25,7 +25,7 @@ const getThreeRandomBots = () => {
   // now shuffle it
   names.sort(() => Math.random() - 0.5);
 
-  return names.slice(0, 3);
+  return names.slice(0, 2);
 };
 
 export const get = query({
