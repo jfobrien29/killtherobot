@@ -1,5 +1,8 @@
-from openai import OpenAI
 from typing import Generator
+
+from .models import Answer
+from openai import OpenAI
+
 
 def answer_question(
     question: str,
@@ -31,3 +34,7 @@ def answer_question(
     for chunk in stream:
         if chunk.choices[0].delta.content is not None:
             yield chunk.choices[0].delta.content
+
+
+def get_answers(question, names) -> list[Answer]:
+    pass    pass
