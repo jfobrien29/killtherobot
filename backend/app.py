@@ -1,8 +1,11 @@
+import logging
 import os
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from killtherobot_backend.models import Answer, Game
 
@@ -53,3 +56,14 @@ async def get_answer(game: Game, api_key: str = Header(...)) -> list[Answer]:
     ]
 
     return answers
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    raw_body = await request.body()
+    logging.error(f"Invalid request body: {raw_body.decode('utf-8')}")
+
+    return JSONResponse(
+        status_code=400,
+        content={"detail": exc.errors(), "body": raw_body.decode("utf-8")},
+    )
