@@ -290,7 +290,75 @@ export default function Home() {
           </div>
         )}
 
-        {game?.stage === GAME_STAGE.GAME_OVER && <div>Game Over</div>}
+        {game?.stage === GAME_STAGE.GAME_OVER && (
+          <div className="w-full max-w-4xl">
+            <h2 className="text-3xl font-bold mb-6 text-center">Game Over</h2>
+            <div className="bg-white shadow-lg rounded-xl overflow-hidden p-6 border border-gray-300">
+              <h3 className="text-2xl font-semibold mb-4 text-center">
+                {game.bots.every((bot) => !bot.isAlive) ? 'Humans Won!' : 'The Robots Won!'}
+              </h3>
+              <div className="text-center text-lg">
+                {game.humans.filter((human) => human.isAlive).length === 1 ? (
+                  <p>Only one human left standing. The bots have taken over!</p>
+                ) : (
+                  <p>All bots have been eliminated. Humanity prevails!</p>
+                )}
+              </div>
+              <div className="mb-6 bg-green-100 rounded-lg p-6 shadow-md mt-2">
+                <h4 className="text-2xl font-semibold mb-4 text-center">Live Players</h4>
+                <div className="flex justify-center">
+                  <div className="grid grid-cols-2 gap-x-8">
+                    {[...game.humans, ...game.bots]
+                      .filter((player: any) => player.isAlive)
+                      .map((player: any, index: any) => (
+                        <div
+                          key={player.name}
+                          className={`text-lg flex items-center justify-center space-x-2 ${
+                            index % 2 === 0 ? 'justify-end' : 'justify-start'
+                          }`}
+                        >
+                          <span>{player.name}</span>
+                          <span className="text-sm text-gray-500">
+                            {player.hasOwnProperty('isAdmin') ? (
+                              <PersonStanding className="inline w-4 h-4 ml-1" />
+                            ) : (
+                              <Bot className="inline w-4 h-4 ml-1" />
+                            )}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+              <div className="mb-6 bg-red-100 rounded-lg p-6 shadow-md">
+                <h4 className="text-2xl font-semibold mb-4 text-center">Eliminated Players</h4>
+                <div className="flex justify-center">
+                  <div className="grid grid-cols-2 gap-x-8">
+                    {[...game.humans, ...game.bots]
+                      .filter((player) => !player.isAlive)
+                      .map((player, index) => (
+                        <div
+                          key={player.name}
+                          className={`text-lg flex items-center justify-center space-x-2 ${
+                            index % 2 === 0 ? 'justify-end' : 'justify-start'
+                          }`}
+                        >
+                          <span>{player.name}</span>
+                          <span className="text-sm text-gray-500">
+                            {player.hasOwnProperty('isAdmin') ? (
+                              <PersonStanding className="inline w-4 h-4 ml-1" />
+                            ) : (
+                              <Bot className="inline w-4 h-4 ml-1" />
+                            )}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <code className="mt-64 whitespace-pre max-w-[1000px]">{JSON.stringify(game, null, 2)}</code>
 

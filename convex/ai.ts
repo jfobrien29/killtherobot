@@ -37,31 +37,30 @@ export const botCreateAnswers = internalAction({
     // TODO: This is where we would create answers for the bots
     // Send out response and expect an array of answer back
     try {
-      // const resp = await fetch('https://killtherobot.onrender.com/get_answer', {
-      //   method: 'POST',
-      //   body: JSON.stringify(game),
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'api-key': 'f44345fa-ab73-4fe6-8c20-e137751a5f76',
-      //   },
-      // });
+      const resp = await fetch('https://killtherobot.onrender.com/get_answer', {
+        method: 'POST',
+        body: JSON.stringify(game),
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': 'f44345fa-ab73-4fe6-8c20-e137751a5f76',
+        },
+      });
 
-      // console.log('resp', resp);
-      // const responseAnswers = await resp.json();
-      // console.log('responseAnswers', responseAnswers);
+      console.log('resp', resp);
+      const responseAnswers = await resp.json();
+      console.log('responseAnswers', responseAnswers);
 
-      // await ctx.runMutation(internal.game.updateWithBotsAnswers, {
-      //   gameId,
-      //   answers: responseAnswers
-      //     .filter((answer: any) => botsAlive.some((bot: any) => bot.name === answer.name))
-      //     .map((answer: any) => {
-      //       return {
-      //         name: answer.name,
-      //         text: answer.text,
-      //       };
-      //     }),
-      // });
-      throw new ConvexError('Not implemented');
+      await ctx.runMutation(internal.game.updateWithBotsAnswers, {
+        gameId,
+        answers: responseAnswers
+          .filter((answer: any) => botsAlive.some((bot: any) => bot.name === answer.name))
+          .map((answer: any) => {
+            return {
+              name: answer.name,
+              text: answer.text,
+            };
+          }),
+      });
     } catch (e) {
       console.error('Error creating answers', e);
       try {
@@ -70,6 +69,7 @@ export const botCreateAnswers = internalAction({
             return getAnthropicResponse(
               'You are a helpful assistant. Response with a one line answer. You are a human on a cellphone, so keep it short and concise.',
               `You are lazy and only respond with 2-4 words. Write an answer to this question by filling in the blank: ${game.rounds[game.rounds.length - 1].question}`,
+              0.8,
             );
           }),
         );
@@ -266,11 +266,15 @@ update_hero_journey_stage:
   },
 });
 
-export const getAnthropicResponse = async (system: string, user: string) => {
+export const getAnthropicResponse = async (
+  system: string,
+  user: string,
+  temperature: number = 0.5,
+) => {
   const msg = await anthropic.messages.create({
     model: 'claude-3-5-sonnet-20240620',
     max_tokens: 5000,
-    temperature: 0.5,
+    temperature: temperature,
     system,
     messages: [{ role: 'user', content: user }],
   });
