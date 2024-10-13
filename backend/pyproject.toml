@@ -1,0 +1,21 @@
+[project]
+name = "killtherobot_backend"
+version = "0.1.0"
+description = "Backend for Kill the Robot game"
+authors = [
+    {name = "Sean Daly", email = "the_sean_c@fastmail.com"},
+]
+dependencies = [
+    "fastapi>=0.115.2",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
