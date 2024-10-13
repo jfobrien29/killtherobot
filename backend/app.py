@@ -78,7 +78,10 @@ async def answer_question(game: Game, api_key: str = Header(...)) -> list[Answer
         raise HTTPException(status_code=401, detail="Invalid API key")
 
     question = game.rounds[-1].question
+    names = [bot.name for bot in game.bots]
 
     # TODO: Implement the logic to answer the question using OpenAI API
     # This is a placeholder response
-    return [Answer(name="bot1", text=f"answer to {question}", votes=None)]
+    return [
+        Answer(name=name, text=f"answer to {question}", votes=None) for name in names
+    ]
