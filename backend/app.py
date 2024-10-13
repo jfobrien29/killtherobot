@@ -46,7 +46,6 @@ async def answer_question(game: Game, api_key: str = Header(...)) -> list[Answer
 
     question = game.rounds[-1].question
     names = [bot.name for bot in game.bots]
-
     answers = get_answers(question, names)
 
     return answers
