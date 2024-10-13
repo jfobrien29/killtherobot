@@ -63,6 +63,7 @@ export const create = mutation({
         name,
         score: 0,
         isAlive: true,
+        config: '',
       })),
       rounds: [],
       currentRound: 0,
