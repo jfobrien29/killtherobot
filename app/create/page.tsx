@@ -37,14 +37,18 @@ export default function Home() {
         <div className="max-w-md text-sm">
           <p className="mt-2">First time? Here are some tips to get you started:</p>
           <ul className="list-disc space-y-2 pl-4 mt-2">
-            <li>TODO</li>
+            <li>Pick a great theme your group will love</li>
+            <li>Join the game on your phone</li>
+            <li>Enter in a a response to your prompt</li>
+            <li>Vote off the players you think are robots</li>
+            <li>Will humanity survive!?</li>
           </ul>
         </div>
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="w-full max-w-md">
             <TextareaField
               label="Give the theme of your game:"
-              placeholder={`ex. "Marvel Universe", "Planets in the solar system", "Famous cities"`}
+              placeholder={`ex. Space travel, Star Wars, 1776 America`}
               name="name"
             />
             <Button type="submit" className="mt-4 w-full">

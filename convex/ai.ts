@@ -71,7 +71,7 @@ export const botCreateAnswers = internalAction({
             const types = ['funny', 'clever', 'concise', 'cynical', 'bad at writing', 'lazy'];
             const myType = types[Math.floor(Math.random() * types.length)];
             return getAnthropicResponse(
-              'You are a helpful assistant. Response with a one line answer. You are a human on a cellphone, so keep it short and concise.',
+              'You are a helpful assistant. Response with a one line answer. You are a human on a cellphone, so keep it short and concise. Do not use emojis, special characters, quotes, or punctuation. Only capitalize the first letter of the first word of your response.',
               `You  are a ${myType} and only respond with ${randomNumberBetween1And5} words. Write an answer to this question by filling in the blank: ${game.rounds[game.rounds.length - 1].question}`,
               0.6,
             );
