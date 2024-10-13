@@ -11,7 +11,7 @@ class Human(BaseModel):
 
 class Bot(BaseModel):
     name: str
-    config: Any
+    config: Any | None
     isAlive: bool
 
 
