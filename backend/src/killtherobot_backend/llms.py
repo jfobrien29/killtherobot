@@ -1,7 +1,6 @@
 from typing import Generator
 
 from openai import OpenAI
-from utils import Answer, Game
 
 from .models import Answer, Game
 
