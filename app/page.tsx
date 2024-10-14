@@ -12,7 +12,7 @@ export default function Home() {
           </span>
           <br className="pt-2" />
           <span className="text-7xl opacity-0 translate-y-4 animate-[fade-in-up_1s_ease-out_forwards] delay-1000">
-            Kill the Robot
+            Kill The Robot
           </span>
         </h1>
 

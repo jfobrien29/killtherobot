@@ -29,8 +29,8 @@ export interface Game {
   }[];
   bots: {
     name: string;
-    config: any;
     isAlive: boolean; // Each round, someone is killed
+    config: string | null;
   }[];
   rounds: {
     question: string;
@@ -62,7 +62,22 @@ export default defineSchema({
         name: v.string(),
         score: v.number(),
         isAlive: v.boolean(),
+        config: v.optional(v.string()),
       }),
     ),
+    rounds: v.array(
+      v.object({
+        question: v.string(),
+        answers: v.array(
+          v.object({
+            name: v.string(),
+            text: v.string(),
+            votes: v.array(v.string()),
+          }),
+        ),
+        eliminatedPlayer: v.string(),
+      }),
+    ),
+    currentRound: v.number(),
   }).index('by_code', ['code']),
 });

@@ -9,6 +9,8 @@ import * as Yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TextareaField } from '@/components/textareaFields';
+import { useState } from 'react';
+import { useToast } from '@/components/ui/use-toast';
 
 const WaitToStart = () => {
   const { code, player } = useParams();
@@ -59,14 +61,21 @@ const Answering = () => {
     return <div>Loading...</div>;
   }
 
-  const matchup = game.matchups.find((matchup) => {
-    return (
-      (matchup.player1 === playerName && !matchup.player1Answer) ||
-      (matchup.player2 === playerName && !matchup.player2Answer)
-    );
-  });
+  const currentRound = game.rounds[game.currentRound];
+  if (!currentRound) {
+    return <div>Whoops...</div>;
+  }
 
-  if (!matchup) {
+  const currentPlayerAnswer = game.humans.find((human) => human.name === playerName);
+  if (!!currentPlayerAnswer && !currentPlayerAnswer.isAlive) {
+    return (
+      <div className="w-full flex justify-center">
+        <div>You were eliminated!</div>
+      </div>
+    );
+  }
+
+  if (!!currentRound.answers.find((answer) => answer.name === playerName)) {
     return (
       <div className="w-full flex justify-center">
         <div>Waiting for other players to answer...</div>
@@ -79,7 +88,7 @@ const Answering = () => {
       <div className="p-4 w-full flex flex-col gap-4 max-w-md">
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="flex flex-col gap-4 w-full">
-            <TextareaField name="answer" label={matchup.prompt} />
+            <TextareaField name="answer" label={currentRound.question} />
             <Button type="submit">Submit Answer</Button>
           </form>
         </FormProvider>
@@ -116,33 +125,54 @@ const Voting = () => {
   const { code, player } = useParams();
   const submitHumanVote = useMutation(api.game.vote);
   const playerName = decodeURI(player as string);
+  const [selectedVotes, setSelectedVotes] = useState<string[]>([]);
+  const { toast } = useToast();
+
+  const selectVote = (vote: string) => {
+    setSelectedVotes((prev) =>
+      prev.includes(vote) ? prev.filter((v) => v !== vote) : [...prev, vote],
+    );
+  };
 
   const game = useQuery(api.game.get, { code: code as string });
 
-  const onSubmit = async (vote: string) => {
-    await submitHumanVote({ code: code as string, name: playerName, vote });
+  const onSubmit = async () => {
+    if (selectedVotes.length !== 2) {
+      toast({
+        title: 'Please vote for 2 answers to eliminate',
+      });
+      return;
+    }
+    await submitHumanVote({ code: code as string, name: playerName, votes: selectedVotes });
   };
 
   if (!game) {
     return <div>Loading...</div>;
   }
 
-  const matchup = game.matchups[game.matchup];
+  const currentPlayerAnswer = game.humans.find((human) => human.name === playerName);
+  if (!!currentPlayerAnswer && !currentPlayerAnswer.isAlive) {
+    return (
+      <div className="w-full flex justify-center">
+        <div>You were eliminated!</div>
+      </div>
+    );
+  }
+
+  const currentRound = game.rounds[game.currentRound];
+  if (!currentRound) {
+    return <div>Whoops...</div>;
+  }
 
   if (
-    matchup.player1 === playerName ||
-    matchup.player2 === playerName ||
-    matchup.votes1?.includes(playerName) ||
-    matchup.votes2?.includes(playerName)
+    currentRound.answers
+      .map((answer) => answer.votes)
+      .flat()
+      .includes(playerName)
   ) {
     return (
       <div className="w-full flex flex-col justify-center items-center">
         <div>Waiting for other players to vote...</div>
-        {(matchup.player1 === playerName || matchup.player2 === playerName) && (
-          <div className="italic mt-2 text-xs">
-            (You answered this prompt, so you can&apos;t vote on it)
-          </div>
-        )}
       </div>
     );
   }
@@ -150,14 +180,19 @@ const Voting = () => {
   return (
     <div className="w-full flex justify-center">
       <div className="p-4 w-full flex flex-col gap-4 max-w-md">
-        <div className="w-full">{matchup.prompt}</div>
-        {[matchup.player1Answer, matchup.player2Answer].map((answer) => (
-          <div key={answer} className="w-full">
-            <Button key={answer} onClick={() => answer && onSubmit(answer)} className="w-full">
-              {answer}
+        <div className="w-full">{currentRound.question}</div>
+        {currentRound.answers.map((answer: any) => (
+          <div key={answer.text} className="w-full">
+            <Button
+              variant={selectedVotes.includes(answer.text) ? 'secondary' : 'outline'}
+              onClick={() => selectVote(answer.text)}
+              className="w-full text-wrap h-fit"
+            >
+              {answer.text}
             </Button>
           </div>
         ))}
+        <Button onClick={() => onSubmit()}>Vote to Eliminate 2 Responses</Button>
       </div>
     </div>
   );
@@ -166,7 +201,7 @@ const Voting = () => {
 const Reveal = () => {
   const { code, player } = useParams();
   const game = useQuery(api.game.get, { code: code as string });
-  const nextMatchup = useMutation(api.game.nextMatchup);
+  const nextMatchup = useMutation(api.game.nextRound);
 
   if (!game) {
     return <div>Loading...</div>;
@@ -184,7 +219,7 @@ const Reveal = () => {
   return (
     <div>
       <div className="w-full flex justify-center">
-        <div>Look at those results!</div>
+        <div>Look who you eliminated!</div>
       </div>
       {!isAdmin && (
         <div className="w-full flex justify-center italic mt-2 text-sm">
@@ -194,7 +229,7 @@ const Reveal = () => {
       {isAdmin && (
         <div className="flex w-full justify-center mt-4">
           <Button className="w-fit" onClick={() => nextMatchup({ code: code as string })}>
-            Next Matchup (only visible to you)
+            Start Next Round (only visible to you)
           </Button>
         </div>
       )}
@@ -238,6 +273,7 @@ export default function PlayerPage() {
             {game.stage === GAME_STAGE.ENTER_RESPONSES && <Answering />}
             {game.stage === GAME_STAGE.VOTING && <Voting />}
             {game.stage === GAME_STAGE.REVEAL && <Reveal />}
+            {game.stage === GAME_STAGE.NEXT_ROUND_LOADING && <div>Loading next round...</div>}
 
             {game.stage === GAME_STAGE.PAUSED && <Waiting />}
             {game.stage === GAME_STAGE.SHOW_RANKINGS && <ShowRankings />}
