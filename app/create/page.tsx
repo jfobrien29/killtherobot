@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { TextareaField } from '@/components/textareaFields';
 
 const schema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
+  name: Yup.string().required('We need a great theme to get started!'),
 });
 
 export default function Home() {
