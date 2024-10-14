@@ -70,20 +70,23 @@ export default function Home() {
       <div className="absolute inset-0 bg-[url('/bg.webp')] bg-cover bg-center opacity-5 z-0"></div>
       <div className="z-10 flex flex-col items-center min-h-screen gap-8 w-full">
         <div>
-          <h2 className="text-xl font-extrabold text-center text-gray-500">
-            Welcome to Kill The Robot
-          </h2>
           <div className="text-sm text-gray-500 text-center">
-            Visit <span className="font-semibold">{origin}</span>
+            Visit{' '}
+            <a className="font-semibold" href={`${origin || ''}/g/${code}/join`} target="_blank">
+              {origin}
+            </a>
           </div>
+          <h2 className="text-sm  bg-gray-200 px-2 py-1 rounded-full">
+            Join with code: <span className="font-mono font-semibold">{code}</span>
+          </h2>
         </div>
 
         <div className="flex flex-col gap-2 items-center w-full max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-center text-gray-900">{game?.name}</h1>
+          <h1 className="text-6xl font-bold text-center text-gray-900">Kill The Robot</h1>
+          <h2 className="text-2xl font-bold text-center text-gray-900 italic">
+            {game?.name || 'Get them bots!'}
+          </h2>
           <div className="flex flex-col items-center gap-1 mt-2">
-            <h2 className="text-xl  bg-gray-200 px-4 py-2 rounded-full">
-              Join with code: <span className="font-mono font-semibold">{code}</span>
-            </h2>
             {game?.stage === GAME_STAGE.GAME_STARTING && (
               <div className="text-sm text-gray-500">Game starting...</div>
             )}
