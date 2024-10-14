@@ -2,7 +2,13 @@
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+pnpm install
+```
+
+Then, run the development server:
 
 ```bash
 pnpm dev
@@ -35,7 +41,7 @@ export interface Game {
   }[];
   bots: {
     name: string;
-    config: any;
+    config: string?; // No longer used
     isAlive: boolean; // Each round, someone is killed
   }[];
   rounds: {
