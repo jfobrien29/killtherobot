@@ -4,6 +4,7 @@ import OpenAI from 'openai';
 import { internalAction } from './_generated/server';
 import { internal } from './_generated/api';
 import Anthropic from '@anthropic-ai/sdk';
+import { getBotConfig } from './ai_prompts';
 
 const anthropic = new Anthropic();
 
@@ -22,6 +23,35 @@ const getRandomAnswer = () => {
   return DEFAULT_ANSWERS[Math.floor(Math.random() * DEFAULT_ANSWERS.length)];
 };
 
+// Helper function to format the prompt
+function formatPrompt(template: string, variables: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key) => variables[key] || '');
+}
+
+// Function to get good QA pairs
+function getGoodQAPairs(game: any): string {
+  try {
+    const liveHumans = game.humans
+      .filter((human: any) => human.isAlive)
+      .map((human: any) => human.name);
+
+    const goodQAPairs = game.rounds.flatMap((r: any, i: number) => {
+      const pairs = [`Question ${i}: ${r.question}`];
+      r.answers.forEach((a: any, j: number) => {
+        if (a.votes && a.votes.some((voter: string) => liveHumans.includes(voter))) {
+          pairs.push(`- Answer ${j}: ${a.text}`);
+        }
+      });
+      return pairs;
+    });
+
+    return goodQAPairs.join('\n\n');
+  } catch (error) {
+    console.error('Error getting good QA pairs:', error);
+    return '';
+  }
+}
+
 export const botCreateAnswers = internalAction({
   args: { gameId: v.id('games') },
   handler: async (ctx, { gameId }) => {
@@ -34,73 +64,50 @@ export const botCreateAnswers = internalAction({
 
     const botsAlive = game.bots.filter((bot) => bot.isAlive);
 
-    // TODO: This is where we would create answers for the bots
-    // Send out response and expect an array of answer back
     try {
-      const resp = await fetch('https://killtherobot.onrender.com/get_answer', {
-        method: 'POST',
-        body: JSON.stringify(game),
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': 'f44345fa-ab73-4fe6-8c20-e137751a5f76',
-        },
-      });
+      const answers = await Promise.all(
+        botsAlive.map(async (bot) => {
+          const question = game.rounds[game.rounds.length - 1].question;
+          const botConfig = getBotConfig(bot.name);
 
-      console.log('resp', resp);
-      const responseAnswers = await resp.json();
-      console.log('responseAnswers', responseAnswers);
+          if (!botConfig) {
+            throw new Error(`No configuration found for bot ${bot.name}`);
+          }
+
+          const systemMessage = botConfig.system;
+          const humanMessage = formatPrompt(botConfig.prompt, {
+            question: question,
+            good_qa_pairs: getGoodQAPairs(game),
+          });
+
+          const answerText = await getAnthropicResponse(systemMessage, humanMessage, 0.9);
+
+          console.log('bot', bot.name);
+          console.log('answerText', answerText);
+
+          return {
+            name: bot.name,
+            text: answerText,
+          };
+        }),
+      );
 
       await ctx.runMutation(internal.game.updateWithBotsAnswers, {
         gameId,
-        answers: responseAnswers
-          .filter((answer: any) => botsAlive.some((bot: any) => bot.name === answer.name))
-          .map((answer: any) => {
-            return {
-              name: answer.name,
-              text: answer.text,
-            };
-          }),
+        answers,
       });
-      // throw new Error('Not implemented');
     } catch (e) {
       console.error('Error creating answers', e);
-      try {
-        const aiAnswers = await Promise.all(
-          [1, 2].map(() => {
-            const randomNumberBetween1And5 = Math.floor(Math.random() * 5) + 1;
-            const types = ['funny', 'clever', 'concise', 'cynical', 'bad at writing', 'lazy'];
-            const myType = types[Math.floor(Math.random() * types.length)];
-            return getAnthropicResponse(
-              'You are a helpful assistant. Response with a one line answer. Write like a human on a cellphone, so keep it short and concise. Do NOT use emojis, special characters, quotes, or punctuation. Only capitalize the first letter of the first word of your response.',
-              `You  are a ${myType} and only respond with ${randomNumberBetween1And5} words. Write an answer to this question by filling in the blank: ${game.rounds[game.rounds.length - 1].question}`,
-              0.6,
-            );
-          }),
-        );
+      // Fallback to random answers if there's an error
+      const answers = botsAlive.map((bot) => ({
+        name: bot.name,
+        text: getRandomAnswer(),
+      }));
 
-        await ctx.runMutation(internal.game.updateWithBotsAnswers, {
-          gameId,
-          answers: aiAnswers
-            .map((answer, index) => ({
-              name: game.bots[index].name,
-              text: answer,
-            }))
-            .filter((answer) => {
-              return botsAlive.some((bot: any) => bot.name === answer.name);
-            }),
-        });
-      } catch (e) {
-        console.error('Error creating answers', e);
-        const answers = game.bots.map((bot) => ({
-          name: bot.name,
-          text: getRandomAnswer(),
-        }));
-
-        await ctx.runMutation(internal.game.updateWithBotsAnswers, {
-          gameId,
-          answers,
-        });
-      }
+      await ctx.runMutation(internal.game.updateWithBotsAnswers, {
+        gameId,
+        answers,
+      });
     }
   },
 });
@@ -220,7 +227,7 @@ export const getAnthropicResponse = async (system: string, user: string, tempera
   return '';
 };
 
-export const getOpenAIResponse = async (system: string, user: string) => {
+export const getOpenAIResponse = async (system: string, user: string, temperature = 0.9) => {
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o',
     messages: [
@@ -233,6 +240,7 @@ export const getOpenAIResponse = async (system: string, user: string) => {
         content: user,
       },
     ],
+    temperature,
   });
 
   return completion.choices[0].message.content;
