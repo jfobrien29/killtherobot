@@ -80,13 +80,10 @@ export const botCreateAnswers = internalAction({
             good_qa_pairs: getGoodQAPairs(game),
           });
 
-          const prompt = systemMessage + '\n\n' + humanMessage;
+          const answerText = await getAnthropicResponse(systemMessage, humanMessage, 0.9);
 
-          const answerText = await getAnthropicResponse(
-            'You are a helpful assistant. Response with a one line answer. Write like a human on a cellphone, so keep it short and concise. Do NOT use emojis, special characters, quotes, or punctuation. Only capitalize the first letter of the first word of your response.',
-            prompt,
-            0.6,
-          );
+          console.log('bot', bot.name);
+          console.log('answerText', answerText);
 
           return {
             name: bot.name,
@@ -230,7 +227,7 @@ export const getAnthropicResponse = async (system: string, user: string, tempera
   return '';
 };
 
-export const getOpenAIResponse = async (system: string, user: string) => {
+export const getOpenAIResponse = async (system: string, user: string, temperature = 0.9) => {
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o',
     messages: [
@@ -243,6 +240,7 @@ export const getOpenAIResponse = async (system: string, user: string) => {
         content: user,
       },
     ],
+    temperature,
   });
 
   return completion.choices[0].message.content;
