@@ -118,8 +118,9 @@ export default function Home() {
                 <div className="bg-zinc-800 text-white text-xl font-semibold py-3 px-6">Humans</div>
                 <div className="p-6">
                   {game?.humans.map((human) => (
-                    <div key={human.name} className="text-lg mb-2 flex items-center text-gray-700">
-                      <PersonStanding className="mr-2" /> {human.name}{' '}
+                    <div key={human.name} className="text-lg mb-2 flex items-center text-gray-700 ">
+                      <PersonStanding className="mr-2" />{' '}
+                      <span className={clsx(!human.isAlive && 'line-through')}>{human.name}</span>{' '}
                       {currentRound?.answers
                         .map((answer) => answer.name)
                         .flat()
@@ -139,7 +140,8 @@ export default function Home() {
                 <div className="p-6">
                   {game?.bots.map((bot) => (
                     <div key={bot.name} className="text-lg mb-2 flex items-center text-gray-700">
-                      <Bot className="mr-2" /> {bot.name}{' '}
+                      <Bot className="mr-2" />{' '}
+                      <span className={clsx(!bot.isAlive && 'line-through')}>{bot.name}</span>{' '}
                       {currentRound?.answers
                         .map((answer) => answer.name)
                         .flat()
@@ -227,7 +229,8 @@ export default function Home() {
               <div className="p-6">
                 {game?.humans.map((human) => (
                   <div key={human.name} className="text-lg mb-2 flex items-center text-gray-700">
-                    <PersonStanding className="mr-2" /> <span className="">{human.name}</span>
+                    <PersonStanding className="mr-2" />{' '}
+                    <span className={clsx(!human.isAlive && 'line-through')}>{human.name}</span>{' '}
                     {currentRound?.answers
                       .map((answer) => answer.votes)
                       .flat()
