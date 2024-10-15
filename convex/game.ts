@@ -365,11 +365,12 @@ export const checkIfAllVotesAreIn = internalMutation({
 
       const isLoserHuman = game.humans.some((human) => human.name === losingAnswer.name);
 
+      // TODO: temporarily, no one dies!!
       if (isLoserHuman) {
         // Mark the losing player as dead
         await ctx.db.patch(game._id, {
           humans: game.humans.map((human) =>
-            human.name === losingAnswer.name ? { ...human, isAlive: false } : human,
+            human.name === losingAnswer.name ? { ...human, isAlive: true } : human,
           ),
           rounds: [
             ...game.rounds.slice(0, game.currentRound),
@@ -383,7 +384,7 @@ export const checkIfAllVotesAreIn = internalMutation({
         // Mark the losing bot as dead
         await ctx.db.patch(game._id, {
           bots: game.bots.map((bot) =>
-            bot.name === losingAnswer.name ? { ...bot, isAlive: false } : bot,
+            bot.name === losingAnswer.name ? { ...bot, isAlive: true } : bot,
           ),
           rounds: [
             ...game.rounds.slice(0, game.currentRound),

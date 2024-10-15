@@ -80,7 +80,7 @@ export const botCreateAnswers = internalAction({
             good_qa_pairs: getGoodQAPairs(game),
           });
 
-          const answerText = await getAnthropicResponse(systemMessage, humanMessage, 0.9);
+          const answerText = await getOpenAIResponse(systemMessage, humanMessage, 0.9);
 
           console.log('bot', bot.name);
           console.log('answerText', answerText);
@@ -158,8 +158,8 @@ hero_journey_stages:
 const generateNameForGame = async (theme: string) => {
   const resp = await getAnthropicResponse(
     'You are a helpful assistant. Respond with simple answers, and use only alphanumeric characters and spaces. Nothing else.',
-    `You are an extremely excentric superintelligence who's well read and clever. 
-     Don't be cringe. Generate a 4 word exciting name for our game based on the theme: "${theme}"`,
+    `You are an extremely excentric superintelligence who's well read. 
+     Don't be cringe. Generate a 4 word exciting name for our game based on the folowing theme. Do not use alliteration or rhyme.\n\nTheme: "${theme}"`,
   );
 
   return resp || 'Kill The Robot';
@@ -243,5 +243,5 @@ export const getOpenAIResponse = async (system: string, user: string, temperatur
     temperature,
   });
 
-  return completion.choices[0].message.content;
+  return completion.choices[0].message.content || '';
 };
