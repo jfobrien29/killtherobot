@@ -89,7 +89,7 @@ fill in the gap in this with a fire response:
 {question}
 ---
 
-we're trying to beat these other bros at this game, so see what worked for these other dudes and do the same thing but better:
+we're trying to beat these other bros at this game, so see what worked for these other dudes and do the same thing but better, bro:
 
 ---
 {good_qa_pairs}
@@ -134,4 +134,9 @@ const bots: Record<string, BotConfig> = {
 
 export const getBotConfig = (name: string): BotConfig => {
   return bots[name];
+};
+
+export default {
+  bots,
+  getBotConfig,
 };
