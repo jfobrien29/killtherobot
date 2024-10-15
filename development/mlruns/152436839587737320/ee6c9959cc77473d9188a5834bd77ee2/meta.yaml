@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/ee6c9959cc77473d9188a5834bd77ee2/artifacts
+end_time: 1728955686823
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: ee6c9959cc77473d9188a5834bd77ee2
+run_name: langchain-beautiful-hound-903
+run_uuid: ee6c9959cc77473d9188a5834bd77ee2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728955683359
+status: 3
+tags: []
+user_id: seandaly

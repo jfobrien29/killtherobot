@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/cb066e88aa104f13bf637d56584b3f1b/artifacts
+end_time: 1728954740099
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: cb066e88aa104f13bf637d56584b3f1b
+run_name: langchain-unique-cod-68
+run_uuid: cb066e88aa104f13bf637d56584b3f1b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728954736963
+status: 3
+tags: []
+user_id: seandaly

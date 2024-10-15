@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/baa01e6e5fd04d14b8a18866692ee35a/artifacts
+end_time: 1728955666373
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: baa01e6e5fd04d14b8a18866692ee35a
+run_name: langchain-selective-moth-832
+run_uuid: baa01e6e5fd04d14b8a18866692ee35a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728955661855
+status: 3
+tags: []
+user_id: seandaly

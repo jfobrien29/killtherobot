@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/c1f33b1bc53045e080fe04d569081c4f/artifacts
+end_time: 1728954167873
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: c1f33b1bc53045e080fe04d569081c4f
+run_name: langchain-clumsy-ray-688
+run_uuid: c1f33b1bc53045e080fe04d569081c4f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728954165503
+status: 3
+tags: []
+user_id: seandaly

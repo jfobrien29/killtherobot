@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/18c88bdfbf954b6eae3da8d941c1753b/artifacts
+end_time: 1728955095235
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 18c88bdfbf954b6eae3da8d941c1753b
+run_name: langchain-worried-moose-859
+run_uuid: 18c88bdfbf954b6eae3da8d941c1753b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728955088196
+status: 3
+tags: []
+user_id: seandaly

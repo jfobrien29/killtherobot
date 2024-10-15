@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/ff7f9f4d4594495da83d8676c8207855/artifacts
+end_time: 1728955185888
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: ff7f9f4d4594495da83d8676c8207855
+run_name: langchain-big-loon-451
+run_uuid: ff7f9f4d4594495da83d8676c8207855
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728955181392
+status: 3
+tags: []
+user_id: seandaly

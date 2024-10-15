@@ -1,0 +1,15 @@
+channels:
+- conda-forge
+dependencies:
+- python=3.12.7
+- pip
+- pip:
+  - mlflow==2.17.0
+  - cloudpickle==3.1.0
+  - langchain==0.3.3
+  - numpy==1.26.4
+  - psutil==6.0.0
+  - pydantic==2.9.2
+  - pygments==2.18.0
+  - tornado==6.4.1
+name: mlflow-env

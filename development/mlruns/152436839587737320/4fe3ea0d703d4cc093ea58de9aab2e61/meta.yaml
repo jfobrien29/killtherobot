@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/4fe3ea0d703d4cc093ea58de9aab2e61/artifacts
+end_time: 1728954304115
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 4fe3ea0d703d4cc093ea58de9aab2e61
+run_name: langchain-redolent-elk-39
+run_uuid: 4fe3ea0d703d4cc093ea58de9aab2e61
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728954300528
+status: 3
+tags: []
+user_id: seandaly

@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/68e6ffd4c7df4282a82a99cb69bd1de1/artifacts
+end_time: 1728956755297
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 68e6ffd4c7df4282a82a99cb69bd1de1
+run_name: langchain-omniscient-goat-398
+run_uuid: 68e6ffd4c7df4282a82a99cb69bd1de1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728956754253
+status: 3
+tags: []
+user_id: seandaly

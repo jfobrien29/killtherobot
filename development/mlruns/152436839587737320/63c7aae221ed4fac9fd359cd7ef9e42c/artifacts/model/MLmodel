@@ -1,0 +1,34 @@
+artifact_path: model
+flavors:
+  langchain:
+    code: null
+    langchain_version: 0.3.3
+    model_data: model.pkl
+    model_load: runnable_load
+    model_type: ChatPromptTemplate
+    streamable: true
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.langchain
+    model_data: model.pkl
+    model_load: runnable_load
+    model_type: ChatPromptTemplate
+    predict_stream_fn: predict_stream
+    python_version: 3.12.7
+    streamable: true
+mlflow_version: 2.17.0
+model_size_bytes: 2139
+model_uuid: 7ac65e6568d648dc9d1ae88cdd8ae9c4
+run_id: 63c7aae221ed4fac9fd359cd7ef9e42c
+saved_input_example_info:
+  artifact_path: input_example.json
+  serving_input_path: serving_input_example.json
+  type: json_object
+signature:
+  inputs: '[{"type": "string", "name": "question", "required": true}, {"type": "string",
+    "name": "good_qa_pairs", "required": true}]'
+  outputs: null
+  params: null
+utc_time_created: '2024-10-15 00:13:57.250974'

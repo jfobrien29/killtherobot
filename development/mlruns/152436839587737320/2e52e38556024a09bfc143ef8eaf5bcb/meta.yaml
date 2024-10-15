@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/2e52e38556024a09bfc143ef8eaf5bcb/artifacts
+end_time: 1728954217172
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 2e52e38556024a09bfc143ef8eaf5bcb
+run_name: langchain-colorful-skink-153
+run_uuid: 2e52e38556024a09bfc143ef8eaf5bcb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728954213601
+status: 3
+tags: []
+user_id: seandaly

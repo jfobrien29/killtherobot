@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/e82dd3d6dfef44f08f43b95e612eb009/artifacts
+end_time: 1728956969139
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: e82dd3d6dfef44f08f43b95e612eb009
+run_name: langchain-honorable-snail-588
+run_uuid: e82dd3d6dfef44f08f43b95e612eb009
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728956967912
+status: 3
+tags: []
+user_id: seandaly

@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/54cd65e09f9d48ab8ca9f1a602f6d7fa/artifacts
+end_time: 1728956622185
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 54cd65e09f9d48ab8ca9f1a602f6d7fa
+run_name: langchain-nervous-mink-37
+run_uuid: 54cd65e09f9d48ab8ca9f1a602f6d7fa
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728956621066
+status: 3
+tags: []
+user_id: seandaly

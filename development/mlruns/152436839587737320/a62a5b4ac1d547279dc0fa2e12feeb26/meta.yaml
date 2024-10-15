@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/a62a5b4ac1d547279dc0fa2e12feeb26/artifacts
+end_time: 1728954710314
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: a62a5b4ac1d547279dc0fa2e12feeb26
+run_name: langchain-rogue-jay-497
+run_uuid: a62a5b4ac1d547279dc0fa2e12feeb26
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728954707162
+status: 3
+tags: []
+user_id: seandaly

@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/b81bf63f286d406f99390319879c7482/artifacts
+end_time: 1728957272449
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: b81bf63f286d406f99390319879c7482
+run_name: langchain-loud-flea-1000
+run_uuid: b81bf63f286d406f99390319879c7482
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728957271434
+status: 3
+tags: []
+user_id: seandaly

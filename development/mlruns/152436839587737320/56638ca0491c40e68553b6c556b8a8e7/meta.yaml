@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/56638ca0491c40e68553b6c556b8a8e7/artifacts
+end_time: 1728954394114
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 56638ca0491c40e68553b6c556b8a8e7
+run_name: langchain-aged-boar-403
+run_uuid: 56638ca0491c40e68553b6c556b8a8e7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728954391865
+status: 3
+tags: []
+user_id: seandaly

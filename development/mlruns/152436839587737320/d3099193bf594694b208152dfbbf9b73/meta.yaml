@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/d3099193bf594694b208152dfbbf9b73/artifacts
+end_time: 1728952721688
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: d3099193bf594694b208152dfbbf9b73
+run_name: langchain-agreeable-rook-746
+run_uuid: d3099193bf594694b208152dfbbf9b73
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728952719427
+status: 3
+tags: []
+user_id: seandaly

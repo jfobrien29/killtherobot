@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/1470f213cb19430b952b741ee318c78f/artifacts
+end_time: 1728954154321
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 1470f213cb19430b952b741ee318c78f
+run_name: langchain-auspicious-foal-159
+run_uuid: 1470f213cb19430b952b741ee318c78f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728954152470
+status: 3
+tags: []
+user_id: seandaly

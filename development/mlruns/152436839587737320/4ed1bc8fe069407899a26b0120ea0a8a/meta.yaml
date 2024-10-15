@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/4ed1bc8fe069407899a26b0120ea0a8a/artifacts
+end_time: 1728952730267
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 4ed1bc8fe069407899a26b0120ea0a8a
+run_name: langchain-zealous-tern-727
+run_uuid: 4ed1bc8fe069407899a26b0120ea0a8a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728952728249
+status: 3
+tags: []
+user_id: seandaly

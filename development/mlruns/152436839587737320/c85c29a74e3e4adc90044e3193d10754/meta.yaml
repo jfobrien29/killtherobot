@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/c85c29a74e3e4adc90044e3193d10754/artifacts
+end_time: 1728951663783
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: c85c29a74e3e4adc90044e3193d10754
+run_name: langchain-nervous-zebra-655
+run_uuid: c85c29a74e3e4adc90044e3193d10754
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728951663764
+status: 4
+tags: []
+user_id: seandaly

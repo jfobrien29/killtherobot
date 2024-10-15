@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/3578bc0cc0d04f87b53968aa44548d3d/artifacts
+end_time: 1728953758060
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 3578bc0cc0d04f87b53968aa44548d3d
+run_name: langchain-unequaled-cub-740
+run_uuid: 3578bc0cc0d04f87b53968aa44548d3d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728953756283
+status: 3
+tags: []
+user_id: seandaly

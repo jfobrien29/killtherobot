@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/5a4b7b781fcd4b84b34bb1ee18c055d3/artifacts
+end_time: 1728955690730
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 5a4b7b781fcd4b84b34bb1ee18c055d3
+run_name: langchain-dazzling-sow-239
+run_uuid: 5a4b7b781fcd4b84b34bb1ee18c055d3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728955686826
+status: 3
+tags: []
+user_id: seandaly

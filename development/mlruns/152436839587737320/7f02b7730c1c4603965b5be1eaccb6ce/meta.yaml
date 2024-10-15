@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/7f02b7730c1c4603965b5be1eaccb6ce/artifacts
+end_time: 1728957270533
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 7f02b7730c1c4603965b5be1eaccb6ce
+run_name: langchain-blushing-crab-893
+run_uuid: 7f02b7730c1c4603965b5be1eaccb6ce
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728957269708
+status: 3
+tags: []
+user_id: seandaly

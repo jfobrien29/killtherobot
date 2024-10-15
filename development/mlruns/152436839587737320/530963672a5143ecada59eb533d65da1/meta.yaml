@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/530963672a5143ecada59eb533d65da1/artifacts
+end_time: 1728954736960
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 530963672a5143ecada59eb533d65da1
+run_name: langchain-lyrical-snail-976
+run_uuid: 530963672a5143ecada59eb533d65da1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728954733433
+status: 3
+tags: []
+user_id: seandaly

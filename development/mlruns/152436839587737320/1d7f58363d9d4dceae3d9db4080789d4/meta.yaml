@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/1d7f58363d9d4dceae3d9db4080789d4/artifacts
+end_time: 1728957271417
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 1d7f58363d9d4dceae3d9db4080789d4
+run_name: langchain-stately-mule-423
+run_uuid: 1d7f58363d9d4dceae3d9db4080789d4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728957270551
+status: 3
+tags: []
+user_id: seandaly

@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/bf53f97e77224ee88e16832b92d60447/artifacts
+end_time: 1728954389509
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: bf53f97e77224ee88e16832b92d60447
+run_name: langchain-abundant-fowl-414
+run_uuid: bf53f97e77224ee88e16832b92d60447
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728954387000
+status: 3
+tags: []
+user_id: seandaly

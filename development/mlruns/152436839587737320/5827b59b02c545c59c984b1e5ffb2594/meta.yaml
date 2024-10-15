@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/5827b59b02c545c59c984b1e5ffb2594/artifacts
+end_time: 1728955985649
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 5827b59b02c545c59c984b1e5ffb2594
+run_name: langchain-silent-shoat-155
+run_uuid: 5827b59b02c545c59c984b1e5ffb2594
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728955982010
+status: 3
+tags: []
+user_id: seandaly

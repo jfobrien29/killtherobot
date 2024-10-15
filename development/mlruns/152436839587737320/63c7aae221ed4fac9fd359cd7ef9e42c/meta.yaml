@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/63c7aae221ed4fac9fd359cd7ef9e42c/artifacts
+end_time: 1728951239855
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 63c7aae221ed4fac9fd359cd7ef9e42c
+run_name: langchain-flawless-loon-859
+run_uuid: 63c7aae221ed4fac9fd359cd7ef9e42c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728951237205
+status: 3
+tags: []
+user_id: seandaly

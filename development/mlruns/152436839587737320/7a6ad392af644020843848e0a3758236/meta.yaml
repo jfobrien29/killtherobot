@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/7a6ad392af644020843848e0a3758236/artifacts
+end_time: 1728956764625
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 7a6ad392af644020843848e0a3758236
+run_name: langchain-worried-tern-628
+run_uuid: 7a6ad392af644020843848e0a3758236
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728956763621
+status: 3
+tags: []
+user_id: seandaly

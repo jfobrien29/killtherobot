@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/cf6f08702c0248c1a64bd5691beb5a71/artifacts
+end_time: 1728957116789
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: cf6f08702c0248c1a64bd5691beb5a71
+run_name: langchain-caring-skink-600
+run_uuid: cf6f08702c0248c1a64bd5691beb5a71
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728957115600
+status: 3
+tags: []
+user_id: seandaly

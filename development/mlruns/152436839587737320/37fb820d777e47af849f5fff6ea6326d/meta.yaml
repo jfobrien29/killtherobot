@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/37fb820d777e47af849f5fff6ea6326d/artifacts
+end_time: 1728956554176
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 37fb820d777e47af849f5fff6ea6326d
+run_name: langchain-worried-grub-262
+run_uuid: 37fb820d777e47af849f5fff6ea6326d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728956552615
+status: 3
+tags: []
+user_id: seandaly

@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/45572a980f194c30b71e4a7542ac17a0/artifacts
+end_time: 1728954174316
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 45572a980f194c30b71e4a7542ac17a0
+run_name: langchain-capricious-cub-568
+run_uuid: 45572a980f194c30b71e4a7542ac17a0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728954172434
+status: 3
+tags: []
+user_id: seandaly

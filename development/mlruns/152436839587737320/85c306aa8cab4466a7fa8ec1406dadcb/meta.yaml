@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/85c306aa8cab4466a7fa8ec1406dadcb/artifacts
+end_time: 1728956766963
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 85c306aa8cab4466a7fa8ec1406dadcb
+run_name: langchain-likeable-shad-471
+run_uuid: 85c306aa8cab4466a7fa8ec1406dadcb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728956765850
+status: 3
+tags: []
+user_id: seandaly

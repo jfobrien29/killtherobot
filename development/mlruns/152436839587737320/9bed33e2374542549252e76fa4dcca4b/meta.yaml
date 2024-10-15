@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/9bed33e2374542549252e76fa4dcca4b/artifacts
+end_time: 1728957264218
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 9bed33e2374542549252e76fa4dcca4b
+run_name: langchain-indecisive-cow-333
+run_uuid: 9bed33e2374542549252e76fa4dcca4b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728957263202
+status: 3
+tags: []
+user_id: seandaly

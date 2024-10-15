@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/9b0d5a6b23b44bf8a7ee6c60e3b51ad6/artifacts
+end_time: 1728956756536
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 9b0d5a6b23b44bf8a7ee6c60e3b51ad6
+run_name: langchain-bustling-moose-268
+run_uuid: 9b0d5a6b23b44bf8a7ee6c60e3b51ad6
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728956755300
+status: 3
+tags: []
+user_id: seandaly

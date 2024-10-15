@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/seandaly/Library/CloudStorage/OneDrive-Personal/code/projects/killtherobot/development/mlruns/152436839587737320/16b4e0b575c8460888a0d973d09e825b/artifacts
+end_time: 1728955177553
+entry_point_name: ''
+experiment_id: '152436839587737320'
+lifecycle_stage: active
+run_id: 16b4e0b575c8460888a0d973d09e825b
+run_name: langchain-kindly-foal-703
+run_uuid: 16b4e0b575c8460888a0d973d09e825b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1728955174419
+status: 3
+tags: []
+user_id: seandaly
