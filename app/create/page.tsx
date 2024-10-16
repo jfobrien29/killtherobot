@@ -37,10 +37,19 @@ export default function Home() {
         <div className="max-w-md text-sm">
           <p className="mt-2">First time? Here are some tips to get you started:</p>
           <ul className="list-disc space-y-2 pl-4 mt-2">
-            <li>Pick a great theme your group will love</li>
-            <li>Join the game on your phone</li>
-            <li>Enter in a a response to your prompt</li>
-            <li>Vote off the players you think are robots</li>
+            <li>First pick a great theme for the game your group will love</li>
+            <li>
+              Your objective is to determine who the robots are each round and eliminate them.
+            </li>
+            <li>
+              But be carefule, one player is <span className="font-semibold">the cyborg</span> and
+              works for the robots! They&apos;ll feed the robots information and try to stop you
+              from voting them off.
+            </li>
+            <li>
+              Each round you&apos;ll all answer a prompt on your phones then vote off the{' '}
+              <span className="font-semibold">least human sounding responses</span>.
+            </li>
             <li>Will humanity survive!?</li>
           </ul>
         </div>
@@ -48,7 +57,7 @@ export default function Home() {
           <form onSubmit={methods.handleSubmit(onSubmit)} className="w-full max-w-md">
             <TextareaField
               label="Give the theme of your game:"
-              placeholder={`ex. Space travel, Star Wars, 1776 America`}
+              placeholder={`ex. AGI apocalypse, Star Wars, 1776 America`}
               name="name"
             />
             <Button type="submit" className="mt-4 w-full">

@@ -39,6 +39,7 @@ const answeringSchema = Yup.object().shape({
     .required('Answer is required')
     .min(2, 'Answer must be at least 2 characters')
     .max(100, 'Answer must be at most 100 characters'),
+  cyborgContext: Yup.string().optional(),
 });
 
 const Answering = () => {
@@ -51,9 +52,14 @@ const Answering = () => {
     resolver: yupResolver(answeringSchema),
   });
 
-  const onSubmit = async (data: { answer: string }) => {
+  const onSubmit = async (data: { answer: string; cyborgContext?: string }) => {
     console.log(data);
-    await submitHumanAnswer({ code: code as string, name: playerName, answer: data.answer });
+    await submitHumanAnswer({
+      code: code as string,
+      name: playerName,
+      answer: data.answer,
+      cyborgContext: data.cyborgContext,
+    });
     methods.reset();
   };
 
@@ -88,7 +94,14 @@ const Answering = () => {
       <div className="p-4 w-full flex flex-col gap-4 max-w-md">
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="flex flex-col gap-4 w-full">
-            <TextareaField name="answer" label={currentRound.question} />
+            <TextareaField name="answer" label={currentRound.question} placeholder="..." />
+            {currentPlayerAnswer?.isCyborg && (
+              <TextareaField
+                name="cyborgContext"
+                label="YOU ARE THE CYBORG. If you want, give your robot allies more info about the humans here."
+                placeholder="(optional) give your robot allies more info about the humans to help them blend in (ex. inside jokes, whos in the room, etc.)"
+              />
+            )}
             <Button type="submit">Submit Answer</Button>
           </form>
         </FormProvider>
@@ -255,9 +268,9 @@ export default function PlayerPage() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen pb-20 gap-16 p-4 w-full justify-between relative">
+    <div className="flex flex-col items-center min-h-screen  gap-16 w-full justify-between relative">
       <div className="absolute inset-0 bg-[url('/bg.webp')] bg-cover bg-center opacity-5 z-0"></div>
-      <div className="relative flex flex-col items-center min-h-screen gap-16 w-full justify-between">
+      <div className="relative flex flex-col items-center min-h-screen p-4 gap-16 w-full justify-between">
         <div className="w-full">
           <div className="text-center text-sm text-gray-500 mb-4">
             <h1 className="text-base font-semibold">{game.name}</h1>
@@ -265,6 +278,16 @@ export default function PlayerPage() {
             {human.isAdmin && (
               <div className="text-xs italic font-semibold">(You are the game admin)</div>
             )}
+            {game.stage !== GAME_STAGE.PLAYERS_JOINING &&
+              game.stage !== GAME_STAGE.GAME_STARTING &&
+              human.isCyborg && (
+                <div className="text-xs italic font-semibold">(You are the CYBORG)</div>
+              )}
+            {game.stage !== GAME_STAGE.PLAYERS_JOINING &&
+              game.stage !== GAME_STAGE.GAME_STARTING &&
+              !human.isCyborg && (
+                <div className="text-xs italic font-semibold">(You are NOT the CYBORG)</div>
+              )}
           </div>
 
           <div className="flex flex-col gap-4 w-full mt-16">

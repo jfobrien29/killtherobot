@@ -26,6 +26,7 @@ export interface Game {
     name: string;
     isAlive: boolean; // Each round, someone is killed
     isAdmin: boolean; // First person to join who can "start" the game
+    isCyborg: boolean; // If true, this human is a cyborg and can vote for answers
   }[];
   bots: {
     name: string;
@@ -38,6 +39,7 @@ export interface Game {
       name: string; // Who submitted the answer
       text: string; // The answer
       votes: string[]; // Array of names of who voted for this answer
+      context: string | null; // New context for the answer given by the cyborg
     }[];
   }[]; // Questions and answers for each round
   currentRound: number; // start at 0, index for rounds array
@@ -55,6 +57,7 @@ export default defineSchema({
         score: v.number(),
         isAdmin: v.boolean(),
         isAlive: v.boolean(),
+        isCyborg: v.optional(v.boolean()),
       }),
     ),
     bots: v.array(
@@ -75,9 +78,12 @@ export default defineSchema({
             votes: v.array(v.string()),
           }),
         ),
+        context: v.optional(v.string()),
         eliminatedPlayer: v.string(),
       }),
     ),
     currentRound: v.number(),
+    humanLives: v.optional(v.number()),
+    botLives: v.optional(v.number()),
   }).index('by_code', ['code']),
 });

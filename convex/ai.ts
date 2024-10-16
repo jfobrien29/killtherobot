@@ -62,6 +62,8 @@ export const botCreateAnswers = internalAction({
       throw new ConvexError('Game not found');
     }
 
+    const currentRound = game.rounds[game.currentRound];
+    const context = currentRound.context;
     const botsAlive = game.bots.filter((bot) => bot.isAlive);
 
     try {
@@ -78,6 +80,7 @@ export const botCreateAnswers = internalAction({
           const humanMessage = formatPrompt(botConfig.prompt, {
             question: question,
             good_qa_pairs: getGoodQAPairs(game),
+            context: context || '',
           });
 
           const answerText = await getOpenAIResponse(systemMessage, humanMessage, 0.9);

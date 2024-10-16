@@ -67,6 +67,8 @@ export const create = mutation({
       })),
       rounds: [],
       currentRound: 0,
+      humanLives: 3,
+      botLives: 3,
     });
 
     console.log('gameId', gameId);
@@ -161,7 +163,13 @@ export const start = mutation({
 
     // TODO: could add more bots here
 
-    // TODO: could generate the first round here
+    // Now pick who the cyborg is randomly among the humans
+    const cyborg = game.humans[Math.floor(Math.random() * game.humans.length)];
+    await ctx.db.patch(game._id, {
+      humans: game.humans.map((human) =>
+        human.name === cyborg.name ? { ...human, isCyborg: true } : human,
+      ),
+    });
 
     // Now the game is ready to start!
     await ctx.db.patch(game._id, {
@@ -216,8 +224,13 @@ export const getGameById = internalQuery({
 });
 
 export const submitHumanAnswer = mutation({
-  args: { code: v.string(), name: v.string(), answer: v.string() },
-  handler: async (ctx, { code, name, answer }) => {
+  args: {
+    code: v.string(),
+    name: v.string(),
+    answer: v.string(),
+    cyborgContext: v.optional(v.string()),
+  },
+  handler: async (ctx, { code, name, answer, cyborgContext }) => {
     const game = await ctx.db
       .query('games')
       .withIndex('by_code', (q) => q.eq('code', code))
@@ -246,6 +259,24 @@ export const submitHumanAnswer = mutation({
         },
       ],
     });
+
+    const currentHuman = game.humans.find((human) => human.name === name);
+    if (!!cyborgContext && !!currentHuman?.isCyborg) {
+      const updatedGame = await ctx.db.get(game._id);
+      if (!updatedGame) {
+        throw new Error('Game not found');
+      }
+
+      await ctx.db.patch(updatedGame._id, {
+        rounds: [
+          ...updatedGame.rounds.slice(0, updatedGame.currentRound),
+          {
+            ...updatedGame.rounds[updatedGame.currentRound],
+            context: cyborgContext,
+          },
+        ],
+      });
+    }
 
     // Now we need to check if all answers are in
     await ctx.runMutation(internal.game.checkIfAllAnswersAreIn, {
@@ -365,60 +396,31 @@ export const checkIfAllVotesAreIn = internalMutation({
 
       const isLoserHuman = game.humans.some((human) => human.name === losingAnswer.name);
 
-      // TODO: temporarily, no one dies!!
-      if (isLoserHuman) {
-        // Mark the losing player as dead
-        await ctx.db.patch(game._id, {
-          humans: game.humans.map((human) =>
-            human.name === losingAnswer.name ? { ...human, isAlive: true } : human,
-          ),
-          rounds: [
-            ...game.rounds.slice(0, game.currentRound),
-            {
-              ...currentRound,
-              eliminatedPlayer: losingAnswer.name,
-            },
-          ],
-        });
-      } else {
-        // Mark the losing bot as dead
-        await ctx.db.patch(game._id, {
-          bots: game.bots.map((bot) =>
-            bot.name === losingAnswer.name ? { ...bot, isAlive: true } : bot,
-          ),
-          rounds: [
-            ...game.rounds.slice(0, game.currentRound),
-            {
-              ...currentRound,
-              eliminatedPlayer: losingAnswer.name,
-            },
-          ],
-        });
-      }
+      await ctx.db.patch(game._id, {
+        humanLives: isLoserHuman ? (game.humanLives || 0) - 1 : game.humanLives || 0,
+        botLives: isLoserHuman ? game.botLives || 0 : (game.botLives || 0) - 1,
+        rounds: [
+          ...game.rounds.slice(0, game.currentRound),
+          {
+            ...currentRound,
+            eliminatedPlayer: losingAnswer.name, // Mark who lost
+          },
+        ],
+      });
 
+      // Now check if the game is over (in kind of an inefficient way)
       const updatedGame = await ctx.db.get(game._id);
-
       if (!updatedGame) {
         throw new Error('Game not found');
       }
-
-      // Determine if the robots won or not
-      const numBotsAlive = updatedGame.bots.filter((bot) => bot.isAlive).length;
-      const numHumansAlive = updatedGame.humans.filter((human) => human.isAlive).length;
-
-      if (numBotsAlive === 0) {
-        await ctx.db.patch(updatedGame._id, {
-          stage: GAME_STAGE.GAME_OVER,
-        });
-        return;
-      } else if (numHumansAlive <= 1) {
+      if (updatedGame.humanLives! <= 0 && updatedGame.botLives! <= 0) {
         await ctx.db.patch(updatedGame._id, {
           stage: GAME_STAGE.GAME_OVER,
         });
         return;
       }
 
-      // We can move to the reveal stage
+      // If game's not over, move to the reveal stage
       await ctx.db.patch(updatedGame._id, {
         stage: GAME_STAGE.REVEAL,
       });

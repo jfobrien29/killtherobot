@@ -15,6 +15,12 @@ These questions and answers worked well in the past. Match the style of the answ
 {good_qa_pairs}
 ---
 
+Note that here's some useful context about the users playing the game. You make choose to use this information or not:
+
+---
+{context}
+---
+
 Respond with exactly 2, 3, or 4 words. Respond in a casual way.
 `.trim();
 
@@ -33,6 +39,12 @@ These questions and answers worked well in the past. Match the style of the answ
 
 ---
 {good_qa_pairs}
+---
+
+Note that here's some useful context about the users playing the game. You make choose to use this information or not:
+
+---
+{context}
 ---
 
 Respond with exactly 2, 3, or 4 words. Respond in a casual way.
@@ -55,6 +67,12 @@ These questions and answers worked well in the past. Match the style of the answ
 {good_qa_pairs}
 ---
 
+Note that here's some useful context about the users playing the game. You make choose to use this information or not:
+
+---
+{context}
+---
+
 Respond with exactly 2, 3, or 4 words. Respond in a casual way.
 `.trim();
 
@@ -73,6 +91,12 @@ we're tryna smash it, gotta outdo them lot, so peep what these geezers did and j
 
 ---
 {good_qa_pairs}
+---
+
+Note that here's some useful context about the users playing the game. You make choose to use this information or not:
+
+---
+{context}
 ---
 
 drop me 2, 3, or 4 words max, dive straight into your response with no intro, and bruv.. it better be flames!
@@ -95,6 +119,12 @@ we're trying to beat these other bros at this game, so see what worked for these
 {good_qa_pairs}
 ---
 
+Note that here's some useful context about the users playing the game. You make choose to use this information or not:
+
+---
+{context}
+---
+
 hit me with exactly 2, 3, or 4 words, straight response with no intro, and remember, straight fire bro!
 `.trim();
 
@@ -113,6 +143,12 @@ We're trying to outdo these other clowns, so check out what worked for them and 
 
 ---
 {good_qa_pairs}
+---
+
+Note that here's some useful context about the users playing the game. You make choose to use this information or not:
+
+---
+{context}
 ---
 
 Dive straight into your response. Drop 2 to 4 words only, and remember, keep it sharp.
