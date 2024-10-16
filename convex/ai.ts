@@ -207,10 +207,6 @@ hero_journey_stages:
       gameId,
       question,
     });
-
-    await ctx.scheduler.runAfter(0, internal.ai.botCreateAnswers, {
-      gameId,
-    });
   },
 });
 

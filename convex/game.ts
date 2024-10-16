@@ -9,6 +9,7 @@ export enum GAME_STAGE {
   PLAYERS_JOINING = 'PLAYERS_JOINING', // players are joining
   GAME_STARTING = 'GAME_STARTING', // game is starting, create matchups and set prompts
   ENTER_RESPONSES = 'ENTER_RESPONSES', // players enter their responses
+  FINISHING_RESPONSES = 'FINISHING_RESPONSES', // the bots are answering now
   VOTING = 'VOTING', // players vote on the best response, responses shown head to head
   NEXT_ROUND_LOADING = 'NEXT_ROUND_LOADING', // next round is loading
   REVEAL = 'REVEAL', // reveal the winner of the vote
@@ -175,43 +176,6 @@ export const start = mutation({
     await ctx.db.patch(game._id, {
       stage: GAME_STAGE.ENTER_RESPONSES,
     });
-
-    // Now we need to create answers for the bots
-    await ctx.scheduler.runAfter(1000, internal.ai.botCreateAnswers, {
-      gameId: game._id,
-    });
-  },
-});
-
-export const updateWithBotsAnswers = internalMutation({
-  args: {
-    gameId: v.id('games'),
-    answers: v.array(v.object({ name: v.string(), text: v.string() })),
-  },
-  handler: async (ctx, { gameId, answers }) => {
-    const game = await ctx.runQuery(internal.game.getGameById, {
-      gameId,
-    });
-
-    if (!game) {
-      throw new Error('Game not found');
-    }
-
-    const currentRound = game.rounds[game.currentRound];
-
-    // Add in the robot answers
-    await ctx.db.patch(game._id, {
-      rounds: [
-        ...game.rounds.slice(0, game.currentRound),
-        {
-          ...currentRound,
-          answers: [
-            ...currentRound.answers,
-            ...answers.map((answer) => ({ ...answer, votes: [] })),
-          ],
-        },
-      ],
-    });
   },
 });
 
@@ -294,27 +258,53 @@ export const checkIfAllAnswersAreIn = internalMutation({
       throw new Error('Game not found');
     }
 
-    // If all answers are in, we need to move to the voting stage
+    // If all answers are in, we trigger the bot votes
     const numHumans = game.humans.filter((human) => human.isAlive).length;
-    const numBots = game.bots.filter((bot) => bot.isAlive).length;
     const currentRound = game.rounds[game.currentRound];
-    const shuffledAnswers = [...currentRound.answers].sort(() => Math.random() - 0.5);
 
-    const totalAlive = numHumans + numBots;
-    if (currentRound.answers.length === totalAlive) {
+    if (currentRound.answers.length === numHumans) {
       await ctx.db.patch(game._id, {
-        stage: GAME_STAGE.VOTING,
+        stage: GAME_STAGE.FINISHING_RESPONSES,
+      });
 
-        rounds: [
-          ...game.rounds.slice(0, game.currentRound),
-          {
-            ...currentRound,
-            answers: shuffledAnswers,
-          },
-          ...game.rounds.slice(game.currentRound + 1),
-        ],
+      // Now we need to create answers for the bots
+      await ctx.scheduler.runAfter(1000, internal.ai.botCreateAnswers, {
+        gameId: game._id,
       });
     }
+  },
+});
+
+export const updateWithBotsAnswers = internalMutation({
+  args: {
+    gameId: v.id('games'),
+    answers: v.array(v.object({ name: v.string(), text: v.string() })),
+  },
+  handler: async (ctx, { gameId, answers }) => {
+    const game = await ctx.runQuery(internal.game.getGameById, {
+      gameId,
+    });
+
+    if (!game) {
+      throw new Error('Game not found');
+    }
+
+    const currentRound = game.rounds[game.currentRound];
+
+    // Add in the robot answers
+    await ctx.db.patch(game._id, {
+      stage: GAME_STAGE.VOTING,
+      rounds: [
+        ...game.rounds.slice(0, game.currentRound),
+        {
+          ...currentRound,
+          answers: [
+            ...currentRound.answers,
+            ...answers.map((answer) => ({ ...answer, votes: [] })),
+          ],
+        },
+      ],
+    });
   },
 });
 

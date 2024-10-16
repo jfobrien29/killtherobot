@@ -12,28 +12,6 @@ import { Bot, PersonStanding } from 'lucide-react';
 import { HumanOrBot, PlayerType } from '@/convex/schema';
 import clsx from 'clsx';
 
-// const getPlayerssWhoGaveTwoAnswers = (game: any): string[] => {
-//   if (!game) return [];
-//   // First create a map of player name to number of answers
-//   const playerAnswerCount = game.matchups.reduce(
-//     (acc: Record<string, number>, matchup: Matchup) => {
-//       if (!!matchup.player1Answer) {
-//         acc[matchup.player1] = (acc[matchup.player1] || 0) + 1;
-//       }
-//       if (!!matchup.player2Answer) {
-//         acc[matchup.player2] = (acc[matchup.player2] || 0) + 1;
-//       }
-//       return acc;
-//     },
-//     {} as Record<string, number>,
-//   );
-
-//   console.log(playerAnswerCount);
-
-//   // Then filter the map to only include players who gave two answers
-//   return Object.keys(playerAnswerCount).filter((player) => playerAnswerCount[player] === 2);
-// };
-
 export default function Home() {
   const { code } = useParams();
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -52,10 +30,6 @@ export default function Home() {
     }
   }, []);
 
-  // const playersWhoGaveTwoAnswers = getPlayerssWhoGaveTwoAnswers(game);
-
-  // console.log(playersWhoGaveTwoAnswers);
-
   useEffect(() => {
     const generateQrCode = async () => {
       const qr = await QRCode.toDataURL(`${origin}/g/${code}/join`);
@@ -68,40 +42,61 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center min-h-screen pb-20 gap-8 p-4 relative">
       <div className="absolute inset-0 bg-[url('/bg.webp')] bg-cover bg-center opacity-5 z-0"></div>
-      <div className="z-10 flex flex-col items-center min-h-screen gap-8 w-full">
-        <div>
-          <div className="text-sm text-gray-500 text-center">
-            Visit{' '}
-            <a className="font-semibold" href={`${origin || ''}/g/${code}/join`} target="_blank">
-              {origin}
-            </a>
+      <div className="z-10 flex flex-col items-center min-h-screen gap-8 w-full pt-12">
+        <div className="flex gap-4 justify-between items-center w-full max-w-6xl mx-auto">
+          <div className="bg-white shadow-lg rounded-xl p-4 w-64 h-26 flex flex-col justify-center">
+            <h3 className="text-lg font-semibold mb-2">Lives Left</h3>
+            <div className="text-sm flex items-center">
+              Human lives:
+              {[...Array(game?.humanLives || 0)].map((_, index) => (
+                <span key={index} className="text-red-500 ml-1">
+                  ❤️
+                </span>
+              ))}
+            </div>
+            <div className="text-sm flex items-center">
+              Bot lives:
+              {[...Array(game?.botLives || 0)].map((_, index) => (
+                <span key={index} className="text-blue-500 ml-1">
+                  ❤️
+                </span>
+              ))}
+            </div>
           </div>
-          <h2 className="text-sm  bg-gray-200 px-2 py-1 rounded-full">
-            Join with code: <span className="font-mono font-semibold">{code}</span>
-          </h2>
-        </div>
-
-        <div className="flex flex-col gap-2 items-center w-full max-w-4xl mx-auto">
-          <h1 className="text-6xl font-bold text-center text-gray-900">Kill The Robot</h1>
-          <h2 className="text-2xl font-bold text-center text-gray-900 italic">
-            {game?.name || 'Get them bots!'}
-          </h2>
-          <div className="flex flex-col items-center gap-1 mt-2">
-            {game?.stage === GAME_STAGE.GAME_STARTING && (
-              <div className="text-sm text-gray-500">Game starting...</div>
-            )}
-            {game?.stage === GAME_STAGE.ENTER_RESPONSES && (
-              <div className="text-sm text-gray-500">Enter responses...</div>
-            )}
-            {game?.stage === GAME_STAGE.VOTING && (
-              <div className="text-sm text-gray-500">Voting...</div>
-            )}
-            {game?.stage === GAME_STAGE.REVEAL && (
-              <div className="text-sm text-gray-500">Reveal!</div>
-            )}
-            {game?.stage === GAME_STAGE.GAME_OVER && (
-              <div className="text-sm text-gray-500">Game Over!</div>
-            )}
+          <div className="flex flex-col gap-2 items-center flex-1">
+            <h1 className="text-6xl font-bold text-center text-gray-900">Kill The Robot</h1>
+            <h2 className="text-2xl font-bold text-center text-gray-900 italic">
+              {game?.name || 'Get them bots!'}
+            </h2>
+            <div className="flex flex-col items-center gap-1 mt-2">
+              {game?.stage === GAME_STAGE.GAME_STARTING && (
+                <div className="text-sm text-gray-500">Game starting...</div>
+              )}
+              {game?.stage === GAME_STAGE.ENTER_RESPONSES && (
+                <div className="text-sm text-gray-500">Enter responses...</div>
+              )}
+              {game?.stage === GAME_STAGE.FINISHING_RESPONSES && (
+                <div className="text-sm text-gray-500">Get ready to vote...</div>
+              )}
+              {game?.stage === GAME_STAGE.VOTING && (
+                <div className="text-sm text-gray-500">Voting...</div>
+              )}
+              {game?.stage === GAME_STAGE.REVEAL && (
+                <div className="text-sm text-gray-500">Reveal!</div>
+              )}
+              {game?.stage === GAME_STAGE.GAME_OVER && (
+                <div className="text-sm text-gray-500">Game Over!</div>
+              )}
+            </div>
+          </div>
+          <div className="bg-white shadow-lg rounded-xl p-4 w-64 h-26 flex justify-between items-center overflow-hidden">
+            <div className="flex flex-col">
+              <h3 className="text-lg font-semibold">Got lost?</h3>
+              <div className="text-sm">Scan to rejoin:</div>
+            </div>
+            <div className="flex-shrink-0">
+              {qrCode && <img src={qrCode} alt="QR Code" className="w-20 h-20" />}
+            </div>
           </div>
         </div>
 
@@ -111,7 +106,8 @@ export default function Home() {
 
         {(game?.stage === GAME_STAGE.PLAYERS_JOINING ||
           game?.stage === GAME_STAGE.GAME_STARTING ||
-          game?.stage === GAME_STAGE.ENTER_RESPONSES) && (
+          game?.stage === GAME_STAGE.ENTER_RESPONSES ||
+          game?.stage === GAME_STAGE.FINISHING_RESPONSES) && (
           <div className="flex gap-12 w-full items-center max-w-[1000px] transition-all duration-300">
             <div className="flex-1 flex flex-col gap-4">
               <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-all hover:shadow-2xl border border-gray-300">
