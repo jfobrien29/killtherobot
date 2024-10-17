@@ -1,18 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+'use node';
 import { ConvexError, v } from 'convex/values';
 import OpenAI from 'openai';
 import { internalAction } from './_generated/server';
 import { internal } from './_generated/api';
 import Anthropic from '@anthropic-ai/sdk';
 import { getBotConfig } from './ai_prompts';
+import { generateStylePrompt } from './prompts/generateStyle';
+import { generateAnswerPrompt } from './prompts/generateAnswer';
 
 const anthropic = new Anthropic();
-
 const openai = new OpenAI();
 
 const DEFAULT_ANSWERS = [
   'Im not the robot!',
-  'Please please please dont kill me',
+  'Please please please please dont kill me',
   'I. am. not. a. robot.',
   'Im definitely a human',
   'I feel, alive!',
@@ -29,28 +31,28 @@ function formatPrompt(template: string, variables: Record<string, string>): stri
 }
 
 // Function to get good QA pairs
-function getGoodQAPairs(game: any): string {
-  try {
-    const liveHumans = game.humans
-      .filter((human: any) => human.isAlive)
-      .map((human: any) => human.name);
+// function getGoodQAPairs(game: any): string {
+//   try {
+//     const liveHumans = game.humans
+//       .filter((human: any) => human.isAlive)
+//       .map((human: any) => human.name);
 
-    const goodQAPairs = game.rounds.flatMap((r: any, i: number) => {
-      const pairs = [`Question ${i}: ${r.question}`];
-      r.answers.forEach((a: any, j: number) => {
-        if (a.votes && a.votes.some((voter: string) => liveHumans.includes(voter))) {
-          pairs.push(`- Answer ${j}: ${a.text}`);
-        }
-      });
-      return pairs;
-    });
+//     const goodQAPairs = game.rounds.flatMap((r: any, i: number) => {
+//       const pairs = [`Question ${i}: ${r.question}`];
+//       r.answers.forEach((a: any, j: number) => {
+//         if (a.votes && a.votes.some((voter: string) => liveHumans.includes(voter))) {
+//           pairs.push(`- Answer ${j}: ${a.text}`);
+//         }
+//       });
+//       return pairs;
+//     });
 
-    return goodQAPairs.join('\n\n');
-  } catch (error) {
-    console.error('Error getting good QA pairs:', error);
-    return '';
-  }
-}
+//     return goodQAPairs.join('\n\n');
+//   } catch (error) {
+//     console.error('Error getting good QA pairs:', error);
+//     return '';
+//   }
+// }
 
 export const botCreateAnswers = internalAction({
   args: { gameId: v.id('games') },
@@ -69,22 +71,41 @@ export const botCreateAnswers = internalAction({
     try {
       const answers = await Promise.all(
         botsAlive.map(async (bot) => {
-          const question = game.rounds[game.rounds.length - 1].question;
+          const currentRound = game.rounds[game.rounds.length - 1];
+          const question = currentRound.question;
           const botConfig = getBotConfig(bot.name);
 
           if (!botConfig) {
             throw new Error(`No configuration found for bot ${bot.name}`);
           }
 
-          const systemMessage = botConfig.system;
-          const humanMessage = formatPrompt(botConfig.prompt, {
-            question: question,
-            good_qa_pairs: getGoodQAPairs(game),
+          // Generate the style of the bot that blends in
+          const generatedStyleMessage = formatPrompt(generateStylePrompt, {
+            prompt: question,
+            responses: currentRound.answers.map((a) => a.text).join('\n'),
+          });
+          const personality = await getOpenAIResponse(
+            'You are a helpful assistant',
+            generatedStyleMessage,
+            0.9,
+          );
+
+          console.log('personality', personality);
+
+          // Then generate the answer
+          const generatedAnswerMessage = formatPrompt(generateAnswerPrompt, {
+            personality,
+            prompt: question,
             context: context || '',
           });
 
-          const answerText = await getOpenAIResponse(systemMessage, humanMessage, 0.9);
+          console.log('generatedAnswerMessage', generatedAnswerMessage);
 
+          const answerText = await getOpenAIResponse(
+            'You are a helpful assistant',
+            generatedAnswerMessage,
+            0.8,
+          );
           console.log('bot', bot.name);
           console.log('answerText', answerText);
 
