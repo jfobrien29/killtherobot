@@ -95,7 +95,7 @@ const Answering = () => {
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="flex flex-col gap-4 w-full">
             <TextareaField name="answer" label={currentRound.question} placeholder="..." />
-            {currentPlayerAnswer?.isCyborg && (
+            {!!game.includeCyborg && currentPlayerAnswer?.isCyborg && (
               <TextareaField
                 name="cyborgContext"
                 label="YOU ARE THE CYBORG. If you want, give your robot allies more info about the humans here."
@@ -280,11 +280,13 @@ export default function PlayerPage() {
             )}
             {game.stage !== GAME_STAGE.PLAYERS_JOINING &&
               game.stage !== GAME_STAGE.GAME_STARTING &&
+              !!game.includeCyborg &&
               human.isCyborg && (
                 <div className="text-xs italic font-semibold">(You are the CYBORG)</div>
               )}
             {game.stage !== GAME_STAGE.PLAYERS_JOINING &&
               game.stage !== GAME_STAGE.GAME_STARTING &&
+              !!game.includeCyborg &&
               !human.isCyborg && (
                 <div className="text-xs italic font-semibold">(You are NOT the CYBORG)</div>
               )}

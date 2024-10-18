@@ -60,6 +60,7 @@ export default function Home() {
               placeholder={`ex. AGI apocalypse, Star Wars, 1776 America`}
               name="name"
             />
+            {/** TODO: Add switch to toggle the cyborg and game mode */}
             <Button type="submit" className="mt-4 w-full">
               Start Kill The Robot
             </Button>

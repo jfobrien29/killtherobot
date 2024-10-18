@@ -2,6 +2,7 @@
 import { v } from 'convex/values';
 import { internalMutation, internalQuery, mutation, query } from './_generated/server';
 import { internal } from './_generated/api';
+import { GameType } from './schema';
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -176,6 +177,8 @@ export const start = mutation({
     await ctx.db.patch(game._id, {
       stage: GAME_STAGE.ENTER_RESPONSES,
     });
+
+    // TODO: kick off the bot subitting responses here
   },
 });
 
@@ -359,7 +362,7 @@ export const checkIfAllVotesAreIn = internalMutation({
 
     console.log('totalVotes', totalVotes);
     console.log('numAliveHumans', numAliveHumans);
-    if (totalVotes === numAliveHumans * 2 && game.stage === GAME_STAGE.VOTING) {
+    if (totalVotes >= numAliveHumans * 2 && game.stage === GAME_STAGE.VOTING) {
       // Do processing on who lost here
       let losingAnswerAmount = currentRound.answers[0].votes.length;
       for (const answer of currentRound.answers) {
@@ -386,28 +389,62 @@ export const checkIfAllVotesAreIn = internalMutation({
 
       const isLoserHuman = game.humans.some((human) => human.name === losingAnswer.name);
 
-      await ctx.db.patch(game._id, {
-        humanLives: isLoserHuman ? (game.humanLives || 0) - 1 : game.humanLives || 0,
-        botLives: isLoserHuman ? game.botLives || 0 : (game.botLives || 0) - 1,
-        rounds: [
-          ...game.rounds.slice(0, game.currentRound),
-          {
-            ...currentRound,
-            eliminatedPlayer: losingAnswer.name, // Mark who lost
-          },
-        ],
-      });
+      if (game.gameType === GameType.LIVES) {
+        await ctx.db.patch(game._id, {
+          humanLives: isLoserHuman ? (game.humanLives || 0) - 1 : game.humanLives || 0,
+          botLives: isLoserHuman ? game.botLives || 0 : (game.botLives || 0) - 1,
+          rounds: [
+            ...game.rounds.slice(0, game.currentRound),
+            {
+              ...currentRound,
+              eliminatedPlayer: losingAnswer.name, // Mark who lost
+            },
+          ],
+        });
+      } else if (game.gameType === GameType.ELIMINATION) {
+        await ctx.db.patch(game._id, {
+          bots: game.bots.map((bot) =>
+            bot.name === losingAnswer.name ? { ...bot, isAlive: false } : bot,
+          ),
+          humans: game.humans.map((human) =>
+            human.name === losingAnswer.name ? { ...human, isAlive: false } : human,
+          ),
+          rounds: [
+            ...game.rounds.slice(0, game.currentRound),
+            {
+              ...currentRound,
+              eliminatedPlayer: losingAnswer.name, // Mark who lost
+            },
+          ],
+        });
+      }
 
       // Now check if the game is over (in kind of an inefficient way)
       const updatedGame = await ctx.db.get(game._id);
       if (!updatedGame) {
         throw new Error('Game not found');
       }
-      if (updatedGame.humanLives! <= 0 && updatedGame.botLives! <= 0) {
-        await ctx.db.patch(updatedGame._id, {
-          stage: GAME_STAGE.GAME_OVER,
-        });
-        return;
+
+      if (updatedGame.gameType === GameType.LIVES) {
+        if (updatedGame.humanLives! <= 0 && updatedGame.botLives! <= 0) {
+          await ctx.db.patch(updatedGame._id, {
+            stage: GAME_STAGE.GAME_OVER,
+          });
+          return;
+        }
+      } else if (updatedGame.gameType === GameType.ELIMINATION) {
+        if (updatedGame.bots.every((bot) => !bot.isAlive)) {
+          await ctx.db.patch(updatedGame._id, {
+            stage: GAME_STAGE.GAME_OVER,
+          });
+          return;
+        }
+        if (updatedGame.humans.filter((human) => human.isAlive).length === 1) {
+          await ctx.db.patch(updatedGame._id, {
+            stage: GAME_STAGE.GAME_OVER,
+          });
+          return;
+        }
       }
 
       // If game's not over, move to the reveal stage
