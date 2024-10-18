@@ -71,6 +71,8 @@ export const create = mutation({
       currentRound: 0,
       humanLives: 3,
       botLives: 3,
+      gameType: GameType.ELIMINATION,
+      includeCyborg: false,
     });
 
     console.log('gameId', gameId);
