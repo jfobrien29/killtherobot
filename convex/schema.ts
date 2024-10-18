@@ -7,6 +7,11 @@ export enum PlayerType {
   BOT = 'BOT',
 }
 
+export enum GameType {
+  ELIMINATION = 'ELIMINATION',
+  LIVES = 'LIVES',
+}
+
 export interface HumanOrBot {
   name: string;
   score: number;
@@ -43,6 +48,8 @@ export interface Game {
     }[];
   }[]; // Questions and answers for each round
   currentRound: number; // start at 0, index for rounds array
+  gameType: GameType;
+  includeCyborg: boolean;
 }
 
 export default defineSchema({
@@ -85,5 +92,7 @@ export default defineSchema({
     currentRound: v.number(),
     humanLives: v.optional(v.number()),
     botLives: v.optional(v.number()),
+    gameType: v.optional(v.string()),
+    includeCyborg: v.optional(v.boolean()),
   }).index('by_code', ['code']),
 });

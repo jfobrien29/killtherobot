@@ -16,4 +16,9 @@ CONTEXT
 {context}
 ---
 
+---
+Your response must also be substaintially different from the following responses:
+{responses}
+---
+
 ANSWER:`;

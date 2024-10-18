@@ -5,7 +5,6 @@ import OpenAI from 'openai';
 import { internalAction } from './_generated/server';
 import { internal } from './_generated/api';
 import Anthropic from '@anthropic-ai/sdk';
-import { getBotConfig } from './ai_prompts';
 import { generateStylePrompt } from './prompts/generateStyle';
 import { generateAnswerPrompt } from './prompts/generateAnswer';
 
@@ -30,6 +29,7 @@ function formatPrompt(template: string, variables: Record<string, string>): stri
   return template.replace(/\{(\w+)\}/g, (_, key) => variables[key] || '');
 }
 
+// COMMENTED OUT FOR NOW, TRYING NEW PROMPT
 // Function to get good QA pairs
 // function getGoodQAPairs(game: any): string {
 //   try {
@@ -73,16 +73,13 @@ export const botCreateAnswers = internalAction({
         botsAlive.map(async (bot) => {
           const currentRound = game.rounds[game.rounds.length - 1];
           const question = currentRound.question;
-          const botConfig = getBotConfig(bot.name);
 
-          if (!botConfig) {
-            throw new Error(`No configuration found for bot ${bot.name}`);
-          }
+          const allResponses = currentRound.answers.map((a) => a.text).join('\n');
 
           // Generate the style of the bot that blends in
           const generatedStyleMessage = formatPrompt(generateStylePrompt, {
             prompt: question,
-            responses: currentRound.answers.map((a) => a.text).join('\n'),
+            responses: allResponses,
           });
           const personality = await getOpenAIResponse(
             'You are a helpful assistant',
@@ -97,6 +94,7 @@ export const botCreateAnswers = internalAction({
             personality,
             prompt: question,
             context: context || '',
+            responses: allResponses,
           });
 
           console.log('generatedAnswerMessage', generatedAnswerMessage);
@@ -104,7 +102,7 @@ export const botCreateAnswers = internalAction({
           const answerText = await getOpenAIResponse(
             'You are a helpful assistant',
             generatedAnswerMessage,
-            0.8,
+            0.9,
           );
           console.log('bot', bot.name);
           console.log('answerText', answerText);
