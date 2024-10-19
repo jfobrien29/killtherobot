@@ -8,22 +8,32 @@ import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useRouter } from 'next/navigation';
 import { TextareaField } from '@/components/textareaFields';
+import { RadioField } from '@/components/radioField';
+import { GameType, HasCyborg } from '@/convex/schema';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('We need a great theme to get started!'),
+  gameType: Yup.string().required('We need a game mode to get started!'),
+  includeCyborg: Yup.string().required('We need to know if you want to include the cyborg!'),
 });
 
 export default function Home() {
   const methods = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      gameType: GameType.ELIMINATION,
+      includeCyborg: HasCyborg.NO,
+    },
   });
   const router = useRouter();
   const createGame = useMutation(api.game.create);
 
-  const onSubmit = async (data: { name: string }) => {
+  const onSubmit = async (data: { name: string; gameType: string; includeCyborg: string }) => {
     console.log(data);
     const code = await createGame({
       name: data.name,
+      gameType: data.gameType,
+      hasCyborg: data.includeCyborg === HasCyborg.YES,
     });
 
     router.push(`/g/${code}`);
@@ -59,6 +69,23 @@ export default function Home() {
               label="Give the theme of your game:"
               placeholder={`ex. AGI apocalypse, Star Wars, 1776 America`}
               name="name"
+            />
+            <RadioField
+              className="mt-4"
+              label=""
+              name="gameType"
+              options={[
+                { label: 'Elimination', value: GameType.ELIMINATION },
+                { label: 'Lives', value: GameType.LIVES },
+              ]}
+            />
+            <RadioField
+              label=""
+              name="includeCyborg"
+              options={[
+                { label: 'No Cyborg, just humans', value: HasCyborg.NO },
+                { label: 'Play with a cyborg', value: HasCyborg.YES },
+              ]}
             />
             {/** TODO: Add switch to toggle the cyborg and game mode */}
             <Button type="submit" className="mt-4 w-full">

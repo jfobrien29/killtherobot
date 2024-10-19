@@ -49,8 +49,8 @@ const generateCode = () => {
 };
 
 export const create = mutation({
-  args: { name: v.string() },
-  handler: async (ctx, { name }) => {
+  args: { name: v.string(), gameType: v.string(), hasCyborg: v.boolean() },
+  handler: async (ctx, { name, gameType, hasCyborg }) => {
     const code = generateCode();
 
     const threeBots = getThreeRandomBots();
@@ -71,8 +71,8 @@ export const create = mutation({
       currentRound: 0,
       humanLives: 3,
       botLives: 3,
-      gameType: GameType.ELIMINATION,
-      includeCyborg: false,
+      gameType: gameType,
+      includeCyborg: !!hasCyborg,
     });
 
     console.log('gameId', gameId);

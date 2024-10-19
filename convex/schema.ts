@@ -12,6 +12,11 @@ export enum GameType {
   LIVES = 'LIVES',
 }
 
+export enum HasCyborg {
+  YES = 'YES',
+  NO = 'NO',
+}
+
 export interface HumanOrBot {
   name: string;
   score: number;

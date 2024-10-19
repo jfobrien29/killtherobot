@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Controller, useFormContext } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 
 type Option = {
-  value: string;
+  value: any;
   label: string;
 };
 
@@ -32,22 +33,23 @@ export const RadioField = ({ label, sublabel, className, name, options }: Props)
         name={name}
         control={formCtx.control}
         render={({ field }) => (
-          <RadioGroup className="flex flex-col sm:flex-row gap-4 mt-1">
+          <RadioGroup
+            className="flex flex-col sm:flex-row gap-4 mt-1"
+            value={field.value}
+            onValueChange={field.onChange}
+          >
             {options.map(({ value, label }) => (
-              <div
-                key={value}
-                className="flex-1 cursor-pointer"
-                onClick={() => field.onChange(value)}
-              >
-                <RadioGroupItem
-                  checked={field.value === value}
-                  value={value}
-                  id={value}
-                  className="peer sr-only checked:bg-gray-400 checked:outline-black"
-                />
+              <div key={value} className="flex-1">
+                <RadioGroupItem value={value} id={value} className="peer sr-only" />
                 <Label
                   htmlFor={value}
-                  className="flex flex-col items-center justify-center p-4 border-2 rounded-lg cursor-pointer hover:bg-secondary transition-colors peer-checked:border-primary peer-checked:bg-primary/10"
+                  className={cn(
+                    'flex flex-col items-center justify-center p-4 border-2 rounded-lg cursor-pointer hover:bg-secondary transition-colors',
+                    'peer-checked:bg-gray-800 peer-checked:border-black peer-checked:text-white',
+                    field.value === value
+                      ? 'bg-gray-600 border-black text-white hover:bg-gray-500'
+                      : '',
+                  )}
                 >
                   <span className="text-sm font-medium">{label}</span>
                 </Label>
