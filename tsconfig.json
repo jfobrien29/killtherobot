@@ -26,9 +26,6 @@
         "./*"
       ]
     },
-    "types": [
-      "vite/client"
-    ]
   },
   "include": [
     "next-env.d.ts",
