@@ -7,6 +7,13 @@ import * as Yup from 'yup';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useRouter } from 'next/navigation';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+
 import { TextareaField } from '@/components/textareaFields';
 import { RadioField } from '@/components/radioField';
 import { GameType, HasCyborg } from '@/convex/schema';
@@ -64,34 +71,61 @@ export default function Home() {
           </ul>
         </div>
         <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="w-full max-w-md">
+          <form className="w-full max-w-md">
             <TextareaField
               label="Give the theme of your game:"
               placeholder={`ex. AGI apocalypse, Star Wars, 1776 America`}
               name="name"
             />
-            <RadioField
-              className="mt-4"
-              label=""
-              name="gameType"
-              options={[
-                { label: 'Elimination', value: GameType.ELIMINATION },
-                { label: 'Lives', value: GameType.LIVES },
-              ]}
-            />
-            <RadioField
-              label=""
-              name="includeCyborg"
-              options={[
-                { label: 'No Cyborg, just humans', value: HasCyborg.NO },
-                { label: 'Play with a cyborg', value: HasCyborg.YES },
-              ]}
-            />
-            {/** TODO: Add switch to toggle the cyborg and game mode */}
-            <Button type="submit" className="mt-4 w-full">
+
+            <Button onClick={methods.handleSubmit(onSubmit)} className="mt-4 w-full">
               Start Kill The Robot
             </Button>
           </form>
+          <div className="w-full max-w-md">
+            <Accordion type="single" collapsible>
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Advanced Setup</AccordionTrigger>
+                <AccordionContent>
+                  <RadioField
+                    className="mt-4"
+                    label=""
+                    name="gameType"
+                    options={[
+                      {
+                        label: 'Elimination',
+                        tooltip:
+                          'Each round you vote off the least human sounding response until the humans or the robots win.',
+                        value: GameType.ELIMINATION,
+                      },
+                      {
+                        label: 'Lives',
+                        tooltip: 'Humans and robots each have 3 lives. Last team standing wins!',
+                        value: GameType.LIVES,
+                      },
+                    ]}
+                  />
+                  <RadioField
+                    label=""
+                    name="includeCyborg"
+                    options={[
+                      {
+                        label: 'Play with a cyborg',
+                        tooltip:
+                          'One human will play as the cyborg and feed information to the robots about other humans to improve their chances of surviving.',
+                        value: HasCyborg.YES,
+                      },
+                      {
+                        label: 'Just humans',
+                        tooltip: 'All players are playing against the robots.',
+                        value: HasCyborg.NO,
+                      },
+                    ]}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
         </FormProvider>
       </div>
     </div>
