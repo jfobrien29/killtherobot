@@ -5,8 +5,9 @@ import OpenAI from 'openai';
 import { internalAction } from './_generated/server';
 import { internal } from './_generated/api';
 import Anthropic from '@anthropic-ai/sdk';
-import { generateStylePrompt } from './prompts/generateStyle';
-import { generateAnswerPrompt } from './prompts/generateAnswer';
+import { generateStyleTemplate } from './prompts/generateStyle';
+import { generateRandomStylePrompt } from './prompts/generateRandomStyle';
+import { generateAnswerTemplate } from './prompts/generateAnswer';
 
 const anthropic = new Anthropic();
 const openai = new OpenAI();
@@ -64,39 +65,49 @@ export const botCreateAnswers = internalAction({
       throw new ConvexError('Game not found');
     }
 
+    const isFirstRound = game.rounds.length === 0;
     const currentRound = game.rounds[game.currentRound];
     const context = currentRound.context;
     const botsAlive = game.bots.filter((bot) => bot.isAlive);
 
     try {
+      // First determine the personality of the bot
+      let personality: string;
+      if (isFirstRound) {
+        personality = await getOpenAIResponse(
+          'You are a helpful assistant',
+          generateRandomStylePrompt,
+          0.9,
+        );
+      } else {
+        const previousRound = game.rounds[game.rounds.length - 2];
+        const question = previousRound.question;
+
+        const allResponses = previousRound.answers.map((a) => a.text).join('\n');
+        // Generate the style of the bot that blends in
+        const style = formatPrompt(generateStyleTemplate, {
+          prompt: question,
+          responses: allResponses,
+        });
+
+        personality = await getOpenAIResponse('You are a helpful assistant', style, 0.9);
+      }
+
       const answers = await Promise.all(
         botsAlive.map(async (bot) => {
           const currentRound = game.rounds[game.rounds.length - 1];
           const question = currentRound.question;
 
           const allResponses = currentRound.answers.map((a) => a.text).join('\n');
-
-          // Generate the style of the bot that blends in
-          const generatedStyleMessage = formatPrompt(generateStylePrompt, {
-            prompt: question,
-            responses: allResponses,
-          });
-          const personality = await getOpenAIResponse(
-            'You are a helpful assistant',
-            generatedStyleMessage,
-            0.9,
-          );
-
           console.log('personality', personality);
 
           // Then generate the answer
-          const generatedAnswerMessage = formatPrompt(generateAnswerPrompt, {
+          const generatedAnswerMessage = formatPrompt(generateAnswerTemplate, {
             personality,
             prompt: question,
             context: context || '',
             responses: allResponses,
           });
-
           console.log('generatedAnswerMessage', generatedAnswerMessage);
 
           const answerText = await getOpenAIResponse(

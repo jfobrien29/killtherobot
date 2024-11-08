@@ -20,8 +20,8 @@ import type * as ai_prompts from "../ai_prompts.js";
 import type * as game from "../game.js";
 import type * as prompts_generateAnswer from "../prompts/generateAnswer.js";
 import type * as prompts_generateQuestion from "../prompts/generateQuestion.js";
+import type * as prompts_generateRandomStyle from "../prompts/generateRandomStyle.js";
 import type * as prompts_generateStyle from "../prompts/generateStyle.js";
-import type * as prompts_personalities_funny from "../prompts/personalities/funny.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -37,8 +37,8 @@ declare const fullApi: ApiFromModules<{
   game: typeof game;
   "prompts/generateAnswer": typeof prompts_generateAnswer;
   "prompts/generateQuestion": typeof prompts_generateQuestion;
+  "prompts/generateRandomStyle": typeof prompts_generateRandomStyle;
   "prompts/generateStyle": typeof prompts_generateStyle;
-  "prompts/personalities/funny": typeof prompts_personalities_funny;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

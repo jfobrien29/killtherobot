@@ -1,14 +1,4 @@
-export const generateStyleTemplate = `Analyze the following responses from a group of humans. They wrote these in response to a question.
-
----
-Prompt:
-{prompt}
----
-
----
-Responses:
-{responses}
----
+export const generateRandomStylePrompt = `Generate a random personality based on the following traits for a group of 18-28 year olds in the US.
 
 Now understanding the prompt and the responses, analyze them for the following characteristics:
   - Input Style: Determine the text input style. Do they use caps? Punctuation? Special characters? Emojis? How many words are in their answers?

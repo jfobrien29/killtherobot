@@ -1,4 +1,4 @@
-Please create and return one line exiting, action-packed question in the style of Cards Against Humanity where there is one blank to fill,
+export const generateAnswerPrompt = `Please create and return one line exiting, action-packed question in the style of Cards Against Humanity where there is one blank to fill,
 using the template of hero_journey_stages below, the theme={theme} and the answer from last_voted_answer below. Never reference the 
 current stage name in the question created. Do not return meta observations on what you do.
 game_state:
@@ -18,4 +18,4 @@ hero_journey_stages:
   9. reward
   10. the_road_back
   11. resurrection
-  12. return_with_elixir
+  12. return_with_elixir`;
